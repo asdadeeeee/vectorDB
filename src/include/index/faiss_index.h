@@ -3,7 +3,7 @@
 #include <faiss/Index.h>
 #include <cstdint>
 #include <vector>
-
+namespace vectordb {
 class FaissIndex {
 public:
     explicit FaissIndex(faiss::Index* index); 
@@ -13,3 +13,4 @@ public:
 private:
     faiss::Index* index_;
 };
+}  // namespace vectordb

@@ -7,7 +7,7 @@ Ubuntu 22.04.
 
 
 目前所需的三方库
-：faiss
+：faiss libdw-dev
 需要手动安装
 
 后续将三方库安装等可以类似放在下面这个packages.sh当中，

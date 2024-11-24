@@ -246,3 +246,4 @@ docs/dev
 
 # Submission zip files
 *.zip
+*.tar*

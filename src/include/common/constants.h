@@ -1,5 +1,5 @@
 #pragma once
-
+namespace vectordb {
 #define LOGGER_NAME "GlobalLogger"
 
 #define RESPONSE_VECTORS "vectors"
@@ -12,10 +12,11 @@
 
 #define RESPONSE_RETCODE "retCode" // 添加宏定义
 #define RESPONSE_RETCODE_SUCCESS 0
-#define RESPONSE_RETCODE_ERROR -1
+#define RESPONSE_RETCODE_ERROR (-1)
 
 #define RESPONSE_ERROR_MSG "errorMsg" // 添加宏定义
 
 #define RESPONSE_CONTENT_TYPE_JSON "application/json"
 
 // 其他字符串常量...
+}  // namespace vectordb
