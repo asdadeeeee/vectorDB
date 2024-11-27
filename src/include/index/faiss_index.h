@@ -1,6 +1,6 @@
 #pragma once
 
-#include <faiss/Index.h>
+#include "faiss/Index.h"
 #include <cstdint>
 #include <vector>
 namespace vectordb {

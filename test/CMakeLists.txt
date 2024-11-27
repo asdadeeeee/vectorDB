@@ -14,6 +14,20 @@ file(GLOB_RECURSE VECTORDB_TEST_SOURCES "${PROJECT_SOURCE_DIR}/test/*/*test.cpp"
 add_custom_target(build-tests COMMAND ${CMAKE_CTEST_COMMAND} --show-only)
 add_custom_target(check-tests COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
 add_custom_target(check-public-ci-tests COMMAND ${CMAKE_CTEST_COMMAND} --verbose -E "\"SQLLogicTest|Trie|BPlusTreeContentionTest\"")
+# find_package(Faiss REQUIRED)
+FIND_PACKAGE(BLAS REQUIRED)
+if(BLAS_FOUND)
+    message("BLAS FOUND")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${BLAS_C_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${BLAS_CXX_FLAGS}")
+endif()
+
+FIND_PACKAGE( OpenMP REQUIRED)
+if(OPENMP_FOUND)
+    message("OPENMP FOUND")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+endif()
 
 # #########################################
 # "make XYZ_test"
@@ -38,7 +52,7 @@ foreach (vectordb_test_source ${VECTORDB_TEST_SOURCES})
             TIMEOUT 120
             )
 
-    target_link_libraries(${vectordb_test_name} vectorDB gtest gmock_main)
+    target_link_libraries(${vectordb_test_name} vectorDB gtest gmock_main faiss blas)
 
     # Set test target properties and dependencies.
     set_target_properties(${vectordb_test_name}
