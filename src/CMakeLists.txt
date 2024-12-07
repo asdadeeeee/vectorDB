@@ -2,11 +2,13 @@ cmake_minimum_required(VERSION 3.10)
 
 add_subdirectory(index)
 add_subdirectory(logger)
+add_subdirectory(httpserver)
 add_library(vectorDB STATIC ${ALL_OBJECT_FILES})
 
 set(VECTORDB_LIBS
         vectorDB_index
         vectorDB_logger
+        vectorDB_httpserver
         )
 
 target_link_libraries(
