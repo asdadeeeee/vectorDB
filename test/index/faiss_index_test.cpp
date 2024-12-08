@@ -21,7 +21,7 @@ TEST(IndexTest, SampleTest) {
   // 根据索引类型初始化索引对象并调用insert_vectors函数
 
   std::vector<float> base_data{0.8};
-  uint64_t base_label = 2;
+  uint64_t base_label = 3;
   switch (index_type) {
     case IndexFactory::IndexType::FLAT: {
       auto *faiss_index = static_cast<FaissIndex *>(index);
@@ -50,6 +50,6 @@ TEST(IndexTest, SampleTest) {
 
   EXPECT_EQ(results.first.size(), 1);
   EXPECT_EQ(results.second.size(), 1);
-  EXPECT_EQ(results.first.at(0), 2);
+  EXPECT_EQ(results.first.at(0), 3);
 }
 }  // namespace vectordb

@@ -11,6 +11,7 @@ set(VECTORDB_THIRD_PARTY_INCLUDE_DIR
         ${PROJECT_SOURCE_DIR}/third_party
         ${PROJECT_SOURCE_DIR}/third_party/googletest-1.15.2/googletest/include
         ${PROJECT_SOURCE_DIR}/third_party/spdlog
+        ${PROJECT_SOURCE_DIR}/third_party/rapidjson
         ${PROJECT_SOURCE_DIR}/third_party/backward
 )
 include_directories(${VECTORDB_SRC_INCLUDE_DIR} ${VECTORDB_THIRD_PARTY_INCLUDE_DIR})
@@ -19,3 +20,4 @@ enable_testing()
 add_subdirectory(src)
 add_subdirectory(third_party)
 add_subdirectory(test)
+ add_subdirectory(tools)
