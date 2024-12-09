@@ -13,6 +13,7 @@ set(VECTORDB_THIRD_PARTY_INCLUDE_DIR
         ${PROJECT_SOURCE_DIR}/third_party/spdlog
         ${PROJECT_SOURCE_DIR}/third_party/rapidjson
         ${PROJECT_SOURCE_DIR}/third_party/backward
+        ${PROJECT_SOURCE_DIR}/third_party/hnswlib
 )
 include_directories(${VECTORDB_SRC_INCLUDE_DIR} ${VECTORDB_THIRD_PARTY_INCLUDE_DIR})
 include_directories(BEFORE src) # This is needed for gtest.

@@ -11,6 +11,7 @@ class IndexFactory {
 public:
     enum class IndexType {
         FLAT,
+        HNSW,
         UNKNOWN = -1 
     };
 
@@ -19,12 +20,23 @@ public:
         IP
     };
 
-    void Init(IndexType type, int dim, MetricType metric = MetricType::L2);
+    static auto GetInstance() -> IndexFactory& ;
+
+        // 删除拷贝构造函数和赋值运算符，确保单例不可复制
+    IndexFactory(const IndexFactory&) = delete;
+    auto operator=(const IndexFactory&) -> IndexFactory& = delete;
+
+
+    void Init(IndexType type, int dim,  int num_data, MetricType metric = MetricType::L2);
     auto GetIndex(IndexType type) const -> void*;
 
+
 private:
+
+    IndexFactory()= default; // 禁止外部构造
+    ~IndexFactory()= default; // 禁止外部析构
     std::map<IndexType, void*> index_map_; 
+
 };
 
-auto GetGlobalIndexFactory() -> IndexFactory*;
 }  // namespace vectordb

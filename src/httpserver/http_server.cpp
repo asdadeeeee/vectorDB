@@ -46,6 +46,9 @@ auto HttpServer::GetIndexTypeFromRequest(const rapidjson::Document& json_request
         if (index_type_str == "FLAT") {
             return vectordb::IndexFactory::IndexType::FLAT;
         }
+        if (index_type_str == "INDEX_TYPE_HNSW") {
+            return vectordb::IndexFactory::IndexType::HNSW;
+        }
     }
     return vectordb::IndexFactory::IndexType::UNKNOWN; 
 }
@@ -97,7 +100,7 @@ void HttpServer::SearchHandler(const httplib::Request& req, httplib::Response& r
     }
 
     // 使用全局IndexFactory获取索引对象
-    void* index = GetGlobalIndexFactory()->GetIndex(index_type);
+    void* index = IndexFactory::GetInstance().GetIndex(index_type);
 
     // 根据索引类型初始化索引对象并调用search_vectors函数
     std::pair<std::vector<int64_t>, std::vector<float>> results; // 直接声明results变量
@@ -105,6 +108,11 @@ void HttpServer::SearchHandler(const httplib::Request& req, httplib::Response& r
         case IndexFactory::IndexType::FLAT: {
             auto* faiss_index = static_cast<FaissIndex*>(index);
             results = faiss_index->SearchVectors(query, k);
+            break;
+        }
+        case IndexFactory::IndexType::HNSW:{
+            auto* hnsw_index = static_cast<FaissIndex*>(index);
+            results = hnsw_index->SearchVectors(query, k);
             break;
         }
         // 在此处添加其他索引类型的处理逻辑
@@ -186,13 +194,18 @@ void HttpServer::InsertHandler(const httplib::Request& req, httplib::Response& r
     }
 
     // 使用全局IndexFactory获取索引对象
-    void* index = GetGlobalIndexFactory()->GetIndex(index_type);
+    void* index = IndexFactory::GetInstance().GetIndex(index_type);
 
     // 根据索引类型初始化索引对象并调用insert_vectors函数
     switch (index_type) {
         case IndexFactory::IndexType::FLAT: {
             auto* faiss_index = static_cast<FaissIndex*>(index);
             faiss_index->InsertVectors(data, label);
+            break;
+        }
+        case IndexFactory::IndexType::HNSW:{
+            auto* hnsw_index = static_cast<FaissIndex*>(index);
+            hnsw_index->InsertVectors(data, label);
             break;
         }
         // 在此处添加其他索引类型的处理逻辑

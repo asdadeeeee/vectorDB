@@ -1,22 +1,23 @@
 #include "index/index_factory.h"
-
+#include "index/hnswlib_index.h"
 namespace vectordb {
 
 
-namespace {
-    IndexFactory global_index_factory; 
+auto IndexFactory::GetInstance() -> IndexFactory&
+{
+    static IndexFactory instance;  // 静态局部变量，懒加载
+    return instance;
 }
 
-auto GetGlobalIndexFactory() -> IndexFactory* {
-    return &global_index_factory; 
-}
-
-void IndexFactory::Init(IndexType type, int dim, MetricType metric) {
+void IndexFactory::Init(IndexType type, int dim,  int num_data,MetricType metric) {
     faiss::MetricType faiss_metric = (metric == MetricType::L2) ? faiss::METRIC_L2 : faiss::METRIC_INNER_PRODUCT;
 
     switch (type) {
         case IndexType::FLAT:
             index_map_[type] = new vectordb::FaissIndex(new faiss::IndexIDMap(new faiss::IndexFlat(dim, faiss_metric)));
+            break;
+        case IndexType::HNSW:
+            index_map_[type] = new vectordb::HNSWLibIndex(dim, num_data, metric, 16, 200);
             break;
         default:
             break;

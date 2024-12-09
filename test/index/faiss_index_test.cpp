@@ -10,12 +10,11 @@ TEST(IndexTest, SampleTest) {
   InitGlobalLogger();
   SetLogLevel(spdlog::level::debug);
   int dim = 1;  // 向量维度
-  IndexFactory *indexfactory = GetGlobalIndexFactory();
-  EXPECT_NE(indexfactory, nullptr);
+  auto &indexfactory = IndexFactory::GetInstance();
   IndexFactory::IndexType index_type = IndexFactory::IndexType::FLAT;
-  indexfactory->Init(index_type, dim);
+  indexfactory.Init(index_type, dim);
 
-  void *index = indexfactory->GetIndex(IndexFactory::IndexType::FLAT);
+  void *index = indexfactory.GetIndex(IndexFactory::IndexType::FLAT);
   EXPECT_NE(index, nullptr);
 
   // 根据索引类型初始化索引对象并调用insert_vectors函数

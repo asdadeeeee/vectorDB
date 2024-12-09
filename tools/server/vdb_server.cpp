@@ -14,8 +14,9 @@ auto main() -> int {
 
     // 初始化全局IndexFactory实例
     int dim = 1; // 向量维度
-    vectordb::IndexFactory* global_index_factory = vectordb::GetGlobalIndexFactory();
-    global_index_factory->Init(vectordb::IndexFactory::IndexType::FLAT, dim);
+    auto &global_index_factory = vectordb::IndexFactory::GetInstance();
+    int num_data = 5;
+    global_index_factory.Init(vectordb::IndexFactory::IndexType::FLAT, dim,num_data);
     vectordb::global_logger->info("Global IndexFactory initialized");
 
     // 创建并启动HTTP服务器
