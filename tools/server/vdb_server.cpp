@@ -17,6 +17,7 @@ auto main() -> int {
     auto &global_index_factory = vectordb::IndexFactory::GetInstance();
     int num_data = 5;
     global_index_factory.Init(vectordb::IndexFactory::IndexType::FLAT, dim,num_data);
+    global_index_factory.Init(vectordb::IndexFactory::IndexType::HNSW, dim,num_data);
     vectordb::global_logger->info("Global IndexFactory initialized");
 
     // 创建并启动HTTP服务器

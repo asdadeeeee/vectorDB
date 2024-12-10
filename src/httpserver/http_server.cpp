@@ -1,5 +1,6 @@
 #include "httpserver/http_server.h"
 #include "index/faiss_index.h"
+#include "index/hnswlib_index.h"
 #include "index/index_factory.h"
 #include "logger/logger.h"
 #include "common/constants.h"
@@ -8,6 +9,7 @@
 #include <rapidjson/document.h>
 #include <rapidjson/writer.h>
 #include <rapidjson/stringbuffer.h>
+#include <cassert>
 
 namespace vectordb {
 HttpServer::HttpServer(std::string &host, int port) : host_(std::move(host)), port_(port) {
@@ -46,7 +48,7 @@ auto HttpServer::GetIndexTypeFromRequest(const rapidjson::Document& json_request
         if (index_type_str == "FLAT") {
             return vectordb::IndexFactory::IndexType::FLAT;
         }
-        if (index_type_str == "INDEX_TYPE_HNSW") {
+        if (index_type_str == "HNSW") {
             return vectordb::IndexFactory::IndexType::HNSW;
         }
     }
@@ -101,6 +103,7 @@ void HttpServer::SearchHandler(const httplib::Request& req, httplib::Response& r
 
     // 使用全局IndexFactory获取索引对象
     void* index = IndexFactory::GetInstance().GetIndex(index_type);
+    assert(index != nullptr);
 
     // 根据索引类型初始化索引对象并调用search_vectors函数
     std::pair<std::vector<int64_t>, std::vector<float>> results; // 直接声明results变量
@@ -111,7 +114,7 @@ void HttpServer::SearchHandler(const httplib::Request& req, httplib::Response& r
             break;
         }
         case IndexFactory::IndexType::HNSW:{
-            auto* hnsw_index = static_cast<FaissIndex*>(index);
+            auto* hnsw_index = static_cast<HNSWLibIndex*>(index);
             results = hnsw_index->SearchVectors(query, k);
             break;
         }
@@ -195,6 +198,7 @@ void HttpServer::InsertHandler(const httplib::Request& req, httplib::Response& r
 
     // 使用全局IndexFactory获取索引对象
     void* index = IndexFactory::GetInstance().GetIndex(index_type);
+    assert(index != nullptr);
 
     // 根据索引类型初始化索引对象并调用insert_vectors函数
     switch (index_type) {
@@ -204,7 +208,7 @@ void HttpServer::InsertHandler(const httplib::Request& req, httplib::Response& r
             break;
         }
         case IndexFactory::IndexType::HNSW:{
-            auto* hnsw_index = static_cast<FaissIndex*>(index);
+            auto* hnsw_index = static_cast<HNSWLibIndex*>(index);
             hnsw_index->InsertVectors(data, label);
             break;
         }
