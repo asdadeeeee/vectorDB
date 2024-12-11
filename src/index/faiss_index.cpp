@@ -1,4 +1,5 @@
 #include "index/faiss_index.h"
+#include <faiss/IndexIDMap.h>
 #include <cstdint>
 #include <iostream>
 #include <vector>
@@ -8,7 +9,7 @@
 namespace vectordb {
 FaissIndex::FaissIndex(faiss::Index *index) : index_(index) {}
 
-void FaissIndex::InsertVectors(const std::vector<float> &data, uint64_t label) {
+void FaissIndex::InsertVectors(const std::vector<float> &data, int64_t label) {
   auto id = static_cast<int64_t>(label);
   index_->add_with_ids(1, data.data(), &id);
 }
@@ -32,4 +33,17 @@ auto FaissIndex::SearchVectors(const std::vector<float> &query, int k)
   }
   return {indices, distances};
 }
+
+void FaissIndex::RemoveVectors(const std::vector<int64_t>& ids) { // 添加remove_vectors函数实现
+    auto* id_map = dynamic_cast<faiss::IndexIDMap*>(index_);
+    if (index_ != nullptr) {
+        // 初始化IDSelectorBatch对象
+        faiss::IDSelectorBatch selector(ids.size(), ids.data());
+        auto remove_size = id_map->remove_ids(selector);
+        global_logger->debug("remove size = {}",remove_size);
+    } else {
+        throw std::runtime_error("Underlying Faiss index is not an IndexIDMap");
+    }
+}
+
 }  // namespace vectordb

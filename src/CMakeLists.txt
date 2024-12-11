@@ -3,12 +3,14 @@ cmake_minimum_required(VERSION 3.10)
 add_subdirectory(index)
 add_subdirectory(logger)
 add_subdirectory(httpserver)
+add_subdirectory(database)
 add_library(vectorDB STATIC ${ALL_OBJECT_FILES})
 
 set(VECTORDB_LIBS
         vectorDB_index
         vectorDB_logger
         vectorDB_httpserver
+        vectorDB_database
         )
 
 
@@ -23,11 +25,16 @@ if(OPENMP_FOUND)
     message("OPENMP FOUND")
 endif()
 
+find_library(ROCKSDB_LIB rocksdb)
+if(ROCKSDB_LIB)
+    message("rocksdb FOUND")
+endif()
 
 set(VECTORDB_THIRDPARTY_LIBS
     faiss 
     blas
     OpenMP::OpenMP_CXX
+    ${ROCKSDB_LIB}
     )
 
 

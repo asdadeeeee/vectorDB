@@ -50,5 +50,33 @@ TEST(IndexTest, FaissSampleTest) {
   EXPECT_EQ(results.first.size(), 1);
   EXPECT_EQ(results.second.size(), 1);
   EXPECT_EQ(results.first.at(0), 3);
+
+  switch (index_type) {
+    case IndexFactory::IndexType::FLAT: {
+      auto *faiss_index = static_cast<FaissIndex *>(index);
+      faiss_index->RemoveVectors({3});
+      break;
+    }
+    // 在此处添加其他索引类型的处理逻辑
+    default:
+      break;
+  }
+
+  std::pair<std::vector<int64_t>, std::vector<float>> results2;
+  switch (index_type) {
+    case IndexFactory::IndexType::FLAT: {
+      auto *faiss_index = static_cast<FaissIndex *>(index);
+      results2 = faiss_index->SearchVectors(query, k);
+      break;
+    }
+    // 在此处添加其他索引类型的处理逻辑
+    default:
+      break;
+  }
+
+  EXPECT_EQ(results2.first.at(0), -1);
+
+
+
 }
 }  // namespace vectordb
