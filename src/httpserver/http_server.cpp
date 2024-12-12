@@ -102,7 +102,7 @@ void HttpServer::SearchHandler(const httplib::Request& req, httplib::Response& r
     }
 
     // 使用全局IndexFactory获取索引对象
-    void* index = IndexFactory::GetInstance().GetIndex(index_type);
+    void* index = IndexFactory::Instance().GetIndex(index_type);
     assert(index != nullptr);
 
     // 根据索引类型初始化索引对象并调用search_vectors函数
@@ -197,7 +197,7 @@ void HttpServer::InsertHandler(const httplib::Request& req, httplib::Response& r
     }
 
     // 使用全局IndexFactory获取索引对象
-    void* index = IndexFactory::GetInstance().GetIndex(index_type);
+    void* index = IndexFactory::Instance().GetIndex(index_type);
     assert(index != nullptr);
 
     // 根据索引类型初始化索引对象并调用insert_vectors函数

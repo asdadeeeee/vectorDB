@@ -27,7 +27,7 @@ void VectorDatabase::Upsert(uint64_t id, const rapidjson::Document& data, vector
             existing_vector[i] = existing_data["vectors"][i].GetFloat();
         }
 
-        void* index = IndexFactory::GetInstance().GetIndex(index_type);
+        void* index = IndexFactory::Instance().GetIndex(index_type);
         switch (index_type) {
             case IndexFactory::IndexType::FLAT: {
                 auto* faiss_index = static_cast<FaissIndex*>(index);
@@ -50,7 +50,7 @@ void VectorDatabase::Upsert(uint64_t id, const rapidjson::Document& data, vector
         new_vector[i] = data["vectors"][i].GetFloat();
     }
 
-    void* index = IndexFactory::GetInstance().GetIndex(index_type);
+    void* index = IndexFactory::Instance().GetIndex(index_type);
     switch (index_type) {
         case IndexFactory::IndexType::FLAT: {
             auto* faiss_index = static_cast<FaissIndex*>(index);

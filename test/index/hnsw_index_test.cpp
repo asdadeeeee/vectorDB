@@ -11,7 +11,7 @@ TEST(IndexTest, HNSWSampleTest) {
   InitGlobalLogger();
   SetLogLevel(spdlog::level::debug);
   int dim = 1;  // 向量维度
-  auto &indexfactory = IndexFactory::GetInstance();
+  auto &indexfactory = IndexFactory::Instance();
   IndexFactory::IndexType index_type = IndexFactory::IndexType::HNSW;
   indexfactory.Init(index_type, dim,100);
 

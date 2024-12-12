@@ -1,0 +1,51 @@
+#include <cassert>
+#include <string>
+#include "common/vector_utils.h"
+#include "spdlog/spdlog.h"
+namespace vectordb {
+
+struct LogCfg {
+    std::string m_glog_name_;
+    spdlog::level::level_enum m_level_{spdlog::level::level_enum::debug};
+};
+
+class Cfg : public Singleton<Cfg> {
+    friend class Singleton<Cfg>;
+
+public:
+    // Need call CfgPath first
+    static void CfgPath(const std::string &path)
+    {
+        assert(cfg_path.empty() && !path.empty());
+        cfg_path = path;
+    }
+
+    auto RocksDbPath() const noexcept -> const std::string &
+    {
+        return m_rocks_db_path_;
+    }
+    auto GlogName() const noexcept -> const std::string &
+    {
+        return m_log_cfg_.m_glog_name_;
+    }
+
+    auto GlogLevel() const noexcept -> int
+    {
+        return static_cast<int>(m_log_cfg_.m_level_);
+    }
+
+private:
+    Cfg()
+    {
+        ParseCfgFile(cfg_path);
+    }
+
+    void ParseCfgFile(const std::string &path);
+
+    std::string m_rocks_db_path_;
+    LogCfg m_log_cfg_;
+
+    static std::string cfg_path;
+};
+}  // namespace vectordb
+

@@ -14,7 +14,7 @@ auto main() -> int {
 
     // 初始化全局IndexFactory实例
     int dim = 1; // 向量维度
-    auto &global_index_factory = vectordb::IndexFactory::GetInstance();
+    auto &global_index_factory = vectordb::IndexFactory::Instance();
     int num_data = 5;
     global_index_factory.Init(vectordb::IndexFactory::IndexType::FLAT, dim,num_data);
     global_index_factory.Init(vectordb::IndexFactory::IndexType::HNSW, dim,num_data);
