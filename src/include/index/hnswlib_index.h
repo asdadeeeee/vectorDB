@@ -22,3 +22,4 @@ private:
     hnswlib::HierarchicalNSW<float>* index_;
 };
 }  // namespace vectordb
+

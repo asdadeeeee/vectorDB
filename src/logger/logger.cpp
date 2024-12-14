@@ -5,7 +5,7 @@ namespace vectordb {
 std::shared_ptr<spdlog::logger> global_logger;
 
 void InitGlobalLogger() {
-    global_logger = spdlog::stdout_color_mt("global_logger");
+    global_logger = spdlog::stdout_color_mt(Cfg::Instance().GlogName());
 }
 
 void SetLogLevel(spdlog::level::level_enum log_level) {

@@ -1,0 +1,7 @@
+{
+    "ROCKS_DB_PATH" : "/home/zhouzj/vectordb/storage",
+    "LOG":{
+        "LOG_NAME" : "my_log",
+        "LOG_LEVEL" : 1
+    }
+}

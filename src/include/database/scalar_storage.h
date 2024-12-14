@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SCALART_STORAGE_H
+#define SCALART_STORAGE_H
 
 #include <rocksdb/db.h>
 #include <string>
@@ -24,3 +25,5 @@ private:
     rocksdb::DB* db_;
 };
 }  // namespace vectordb
+
+#endif

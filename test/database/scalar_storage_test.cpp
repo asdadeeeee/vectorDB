@@ -8,9 +8,12 @@
 namespace vectordb {
 // NOLINTNEXTLINE
 TEST(ScalartTest, SampleTest){
+    auto cfg_path  = GetCfgPath();
+    Cfg::CfgPath(cfg_path);
+    
     InitGlobalLogger();
-    SetLogLevel(spdlog::level::debug);
-    ScalarStorage storage("/home/zhouzj/vectordb/storage");
+    SetLogLevel(Cfg::Instance().GlogLevel());
+    ScalarStorage storage(Cfg::Instance().RocksDbPath());
 
     rapidjson::Document doc;
     doc.SetObject();

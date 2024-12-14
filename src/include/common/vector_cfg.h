@@ -1,7 +1,12 @@
+#ifndef VECTOR_CFG_H
+#define VECTOR_CFG_H
+
 #include <cassert>
 #include <string>
 #include "common/vector_utils.h"
 #include "spdlog/spdlog.h"
+#include <rapidjson/document.h> 
+#include <rapidjson/istreamwrapper.h>
 namespace vectordb {
 
 struct LogCfg {
@@ -29,9 +34,9 @@ public:
         return m_log_cfg_.m_glog_name_;
     }
 
-    auto GlogLevel() const noexcept -> int
+    auto GlogLevel() const noexcept -> spdlog::level::level_enum
     {
-        return static_cast<int>(m_log_cfg_.m_level_);
+        return static_cast<spdlog::level::level_enum>(m_log_cfg_.m_level_);
     }
 
 private:
@@ -49,3 +54,4 @@ private:
 };
 }  // namespace vectordb
 
+#endif //VECTOR_CFG_H
