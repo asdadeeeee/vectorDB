@@ -1,5 +1,4 @@
-#ifndef VECTOR_UTILS_H
-#define VECTOR_UTILS_H
+#pragma once
 
 #include <cstring>
 #include <string>
@@ -36,6 +35,7 @@ constexpr auto CompileValue(T value __attribute__((unused)), T debugValue __attr
 #endif
 }
 
+
 inline auto GetCfgPath() -> std::string{
     const char* code_base = std::getenv("VECTORDB_CODE_BASE");
     std::string cfg_name = "vectordb_config";
@@ -52,4 +52,3 @@ inline auto GetCfgPath() -> std::string{
 
 }  // namespace vectordb
 
-#endif 

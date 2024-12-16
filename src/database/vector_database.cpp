@@ -54,12 +54,12 @@ void VectorDatabase::Upsert(uint64_t id, const rapidjson::Document& data, vector
     switch (index_type) {
         case IndexFactory::IndexType::FLAT: {
             auto* faiss_index = static_cast<FaissIndex*>(index);
-            faiss_index->InsertVectors(new_vector, id);
+            faiss_index->InsertVectors(new_vector, static_cast<int64_t>(id));
             break;
         }
         case IndexFactory::IndexType::HNSW: {
             auto* hnsw_index = static_cast<HNSWLibIndex*>(index);
-            hnsw_index->InsertVectors(new_vector, id);
+            hnsw_index->InsertVectors(new_vector, static_cast<int64_t>(id));
             break;
         }
         default:

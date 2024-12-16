@@ -2,18 +2,15 @@
 #include <common.h>
 #include <logger/logger.h>
 #include <cstdint>
+#include "common/vector_init.h"
 #include "gtest/gtest.h"
 #include "index/index_factory.h"
 namespace vectordb {
 // NOLINTNEXTLINE
 TEST(IndexTest, FaissSampleTest) {
-  InitGlobalLogger();
-  SetLogLevel(spdlog::level::debug);
-  int dim = 1;  // 向量维度
+  Init();
   auto &indexfactory = IndexFactory::Instance();
-  IndexFactory::IndexType index_type = IndexFactory::IndexType::FLAT;
-  indexfactory.Init(index_type, dim,100);
-
+  auto index_type = IndexFactory::IndexType::FLAT;
   void *index = indexfactory.GetIndex(IndexFactory::IndexType::FLAT);
   EXPECT_NE(index, nullptr);
 
@@ -76,7 +73,39 @@ TEST(IndexTest, FaissSampleTest) {
 
   EXPECT_EQ(results2.first.at(0), -1);
 
+  rapidjson::Document data;
+  data.SetObject();
+  rapidjson::Document::AllocatorType &allocator = data.GetAllocator();
 
+  rapidjson::Value vectors(rapidjson::kArrayType);
+  vectors.PushBack(0.7, allocator);
 
+  data.AddMember("vectors", vectors, allocator);
+
+  // 将新向量插入索引
+  std::vector<float> new_vector(data["vectors"].Size());  // 从JSON数据中提取vectors字段
+  for (rapidjson::SizeType i = 0; i < data["vectors"].Size(); ++i) {
+    new_vector[i] = data["vectors"][i].GetFloat();
+  }
+  uint64_t label = 1;
+  switch (index_type) {
+    case IndexFactory::IndexType::FLAT: {
+      auto *faiss_index = static_cast<FaissIndex *>(index);
+      faiss_index->InsertVectors(new_vector, static_cast<int64_t>(label));
+      break;
+    }
+    default:
+      break;
+  }
+
+  switch (index_type) {
+    case IndexFactory::IndexType::FLAT: {
+      auto *faiss_index = static_cast<FaissIndex *>(index);
+      faiss_index->RemoveVectors({static_cast<int64_t>(label)});  // 将id转换为long类型
+      break;
+    }
+    default:
+      break;
+  }
 }
 }  // namespace vectordb

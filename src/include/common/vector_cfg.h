@@ -1,5 +1,4 @@
-#ifndef VECTOR_CFG_H
-#define VECTOR_CFG_H
+#pragma once
 
 #include <cassert>
 #include <string>
@@ -53,5 +52,3 @@ private:
     static std::string cfg_path;
 };
 }  // namespace vectordb
-
-#endif //VECTOR_CFG_H
