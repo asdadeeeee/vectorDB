@@ -18,5 +18,8 @@ namespace vectordb {
 
 #define RESPONSE_CONTENT_TYPE_JSON "application/json"
 
+#define INDEX_TYPE_FLAT "FLAT" // 添加宏定义
+#define INDEX_TYPE_HNSW "HNSW" // 添加宏定义
+
 // 其他字符串常量...
 }  // namespace vectordb

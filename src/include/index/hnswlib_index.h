@@ -13,9 +13,23 @@ public:
     void InsertVectors(const std::vector<float>& data, int64_t label);
 
     // 查询向量
-    auto SearchVectors(const std::vector<float>& query, int k, int ef_search = 50) -> std::pair<std::vector<int64_t>, std::vector<float>>;
+    auto SearchVectors(const std::vector<float>& query, int k, const roaring_bitmap_t* bitmap = nullptr,int ef_search = 50) -> std::pair<std::vector<int64_t>, std::vector<float>>;
 
     void RemoveVectors(const std::vector<int64_t>& ids);
+
+        // 定义 RoaringBitmapIDFilter 类
+    class RoaringBitmapIDFilter : public hnswlib::BaseFilterFunctor {
+    public:
+        explicit RoaringBitmapIDFilter(const roaring_bitmap_t* bitmap) : bitmap_(bitmap) {}
+
+        auto operator()(hnswlib::labeltype label) -> bool override {
+            return roaring_bitmap_contains(bitmap_, static_cast<uint32_t>(label));
+        }
+
+    private:
+        const roaring_bitmap_t* bitmap_;
+    };
+    
 private:
     // int dim_;
     hnswlib::SpaceInterface<float>* space_;

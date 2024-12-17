@@ -4,6 +4,7 @@ add_library(
         faiss_index.cpp
         hnswlib_index.cpp
         index_factory.cpp
+        filter_index.cpp
         )
 
 set(ALL_OBJECT_FILES

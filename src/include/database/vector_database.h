@@ -15,6 +15,7 @@ public:
     // 插入或更新向量
     void Upsert(uint64_t id, const rapidjson::Document& data, IndexFactory::IndexType index_type);
     auto Query(uint64_t id) -> rapidjson::Document; // 添加query接口
+    auto Search(const rapidjson::Document& json_request) -> std::pair<std::vector<int64_t>, std::vector<float>>;
 
 private:
     ScalarStorage scalar_storage_;

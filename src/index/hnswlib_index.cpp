@@ -21,10 +21,16 @@ void HNSWLibIndex::InsertVectors(const std::vector<float>& data, int64_t label) 
 }
 
 // 找到最多K个 可能不满K个 不满的都是label distance 为-1
-auto HNSWLibIndex::SearchVectors(const std::vector<float>& query, int k, int ef_search) -> std::pair<std::vector<int64_t>, std::vector<float>> { // 修改返回类型
+auto HNSWLibIndex::SearchVectors(const std::vector<float>& query, int k,const roaring_bitmap_t* bitmap , int ef_search) -> std::pair<std::vector<int64_t>, std::vector<float>> { // 修改返回类型
     assert(index_ != nullptr);
     index_->setEf(ef_search);
-    auto result = index_->searchKnn(query.data(), k);
+
+    RoaringBitmapIDFilter* selector = nullptr;
+    if (bitmap != nullptr) {
+        selector = new RoaringBitmapIDFilter(bitmap);
+    } 
+
+    auto result = index_->searchKnn(query.data(), k,selector);
 
     std::vector<int64_t> indices(k,-1);
     std::vector<float> distances(k,-1);
@@ -42,6 +48,10 @@ auto HNSWLibIndex::SearchVectors(const std::vector<float>& query, int k, int ef_
         }
     }
     global_logger->debug("HNSW index found {} vectors",j);
+
+    if (bitmap != nullptr) {
+        delete selector;
+    } 
     return {indices, distances};
 }
 

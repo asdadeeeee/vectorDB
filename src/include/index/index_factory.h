@@ -13,6 +13,7 @@ public:
     enum class IndexType {
         FLAT,
         HNSW,
+        FILTER, // 添加 FILTER 枚举值
         UNKNOWN = -1 
     };
 

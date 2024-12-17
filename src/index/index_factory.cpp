@@ -1,5 +1,6 @@
 #include "index/index_factory.h"
 #include "index/hnswlib_index.h"
+#include "index/filter_index.h"
 namespace vectordb {
 
 void IndexFactory::Init(IndexType type, int dim,  int num_data,MetricType metric) {
@@ -11,6 +12,9 @@ void IndexFactory::Init(IndexType type, int dim,  int num_data,MetricType metric
             break;
         case IndexType::HNSW:
             index_map_[type] = new vectordb::HNSWLibIndex(dim, num_data, metric, 16, 200);
+            break;
+        case IndexType::FILTER: // 初始化 FilterIndex 对象
+            index_map_[type] = new FilterIndex();
             break;
         default:
             break;

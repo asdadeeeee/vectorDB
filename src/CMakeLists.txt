@@ -27,6 +27,8 @@ if(OPENMP_FOUND)
     message("OPENMP FOUND")
 endif()
 
+find_package(roaring REQUIRED)
+
 find_library(ROCKSDB_LIB rocksdb)
 if(ROCKSDB_LIB)
     message("rocksdb FOUND")
@@ -36,6 +38,7 @@ set(VECTORDB_THIRDPARTY_LIBS
     faiss 
     blas
     OpenMP::OpenMP_CXX
+    roaring::roaring
     ${ROCKSDB_LIB}
     )
 

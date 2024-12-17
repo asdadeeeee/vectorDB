@@ -103,27 +103,8 @@ void HttpServer::SearchHandler(const httplib::Request &req, httplib::Response &r
     return;
   }
 
-  // 使用全局IndexFactory获取索引对象
-  void *index = IndexFactory::Instance().GetIndex(index_type);
-  assert(index != nullptr);
-
-  // 根据索引类型初始化索引对象并调用search_vectors函数
-  std::pair<std::vector<int64_t>, std::vector<float>> results;  // 直接声明results变量
-  switch (index_type) {
-    case IndexFactory::IndexType::FLAT: {
-      auto *faiss_index = static_cast<FaissIndex *>(index);
-      results = faiss_index->SearchVectors(query, k);
-      break;
-    }
-    case IndexFactory::IndexType::HNSW: {
-      auto *hnsw_index = static_cast<HNSWLibIndex *>(index);
-      results = hnsw_index->SearchVectors(query, k);
-      break;
-    }
-    // 在此处添加其他索引类型的处理逻辑
-    default:
-      break;
-  }
+  // 使用 VectorDatabase 的 search 接口执行查询
+  std::pair<std::vector<int64_t>, std::vector<float>> results = vector_database_->Search(json_request);
 
   // 将结果转换为JSON
   rapidjson::Document json_response;

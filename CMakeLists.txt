@@ -26,6 +26,7 @@ set(VECTORDB_THIRD_PARTY_INCLUDE_DIR
         ${PROJECT_SOURCE_DIR}/third_party/backward
         ${PROJECT_SOURCE_DIR}/third_party/hnswlib
         ${PROJECT_SOURCE_DIR}/third_party/rocksdb
+        ${PROJECT_SOURCE_DIR}/third_party/roaring
 )
 add_compile_options(-Wno-unused-function)
 include_directories(${VECTORDB_SRC_INCLUDE_DIR} ${VECTORDB_THIRD_PARTY_INCLUDE_DIR})
