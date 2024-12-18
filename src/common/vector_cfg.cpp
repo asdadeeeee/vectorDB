@@ -24,6 +24,13 @@ void Cfg::ParseCfgFile(const std::string &path) {
     std::cout << "ROCKS_DB_PATH fault" << std::endl;
   }
 
+  if (data.HasMember("WAL_PATH") && data["WAL_PATH"].IsString()) {
+    wal_path_ = data["WAL_PATH"].GetString();
+  } else {
+    std::cout << "WAL_PATH fault" << std::endl;
+  }
+
+
   if (data.HasMember("LOG") && data["LOG"].IsObject()) {
     if (data["LOG"].HasMember("LOG_NAME") && data["LOG"]["LOG_NAME"].IsString()) {
       m_log_cfg_.m_glog_name_ = data["LOG"]["LOG_NAME"].GetString();

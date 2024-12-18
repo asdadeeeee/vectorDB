@@ -28,6 +28,10 @@ public:
     {
         return m_rocks_db_path_;
     }
+    auto WalPath() const noexcept -> const std::string &
+    {
+        return wal_path_;
+    }
     auto GlogName() const noexcept -> const std::string &
     {
         return m_log_cfg_.m_glog_name_;
@@ -47,6 +51,7 @@ private:
     void ParseCfgFile(const std::string &path);
 
     std::string m_rocks_db_path_;
+    std::string wal_path_;
     LogCfg m_log_cfg_;
 
     static std::string cfg_path;

@@ -1,3 +1,4 @@
+#include "common/vector_cfg.h"
 #include "httpserver/http_server.h"
 #include "index/index_factory.h"
 #include "logger/logger.h"
@@ -11,7 +12,8 @@ auto main() -> int {
 
     // 创建并启动HTTP服务器
     std::string host = "localhost";
-    vectordb::VectorDatabase vector_database(vectordb::Cfg::Instance().RocksDbPath());
+    vectordb::VectorDatabase vector_database(vectordb::Cfg::Instance().RocksDbPath(),vectordb::Cfg::Instance().WalPath());
+    vector_database.ReloadDatabase();
     vectordb::HttpServer server(host, 8080,&vector_database);
     vectordb::global_logger->info("HttpServer created");
     server.Start();

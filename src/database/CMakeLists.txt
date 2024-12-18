@@ -3,6 +3,7 @@ add_library(
         OBJECT
         scalar_storage.cpp
         vector_database.cpp
+        persistence.cpp                                                                                 
         )
 
 set(ALL_OBJECT_FILES

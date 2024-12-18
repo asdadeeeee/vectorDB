@@ -34,12 +34,18 @@ if(ROCKSDB_LIB)
     message("rocksdb FOUND")
 endif()
 
+find_library(SNAPPY_LIB snappy)
+if(SNAPPY_LIB)
+    message("snappy FOUND")
+endif()
+
 set(VECTORDB_THIRDPARTY_LIBS
     faiss 
     blas
     OpenMP::OpenMP_CXX
     roaring::roaring
     ${ROCKSDB_LIB}
+    ${SNAPPY_LIB}
     )
 
 

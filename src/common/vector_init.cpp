@@ -1,6 +1,7 @@
 #include "common/vector_init.h"
 #include "index/index_factory.h"
 #include "logger/logger.h"
+#include "database/persistence.h"
 namespace vectordb {
 void Init() {
   auto cfg_path = GetCfgPath();
