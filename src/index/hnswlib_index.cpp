@@ -4,7 +4,7 @@
 #include "logger/logger.h"
 namespace vectordb {
 
-HNSWLibIndex::HNSWLibIndex(int dim, int num_data, IndexFactory::MetricType metric, int M, int ef_construction)
+HNSWLibIndex::HNSWLibIndex(int dim, int num_data, IndexFactory::MetricType metric, int M, int ef_construction):max_elements_(num_data)
 { // 将MetricType参数修改为第三个参数
     // bool normalize = false;
     if (metric == IndexFactory::MetricType::L2) {
@@ -59,6 +59,20 @@ void HNSWLibIndex::RemoveVectors(const std::vector<int64_t>& ids) { // 添加Rem
     assert(index_ != nullptr);
     for(const auto &id:ids){
         index_->markDelete(id);
+    }
+}
+
+void HNSWLibIndex::SaveIndex(const std::string& file_path) { // 添加 saveIndex 方法实现
+    index_->saveIndex(file_path);
+}
+
+void HNSWLibIndex::LoadIndex(const std::string& file_path) { // 添加 loadIndex 方法实现
+    std::ifstream file(file_path); // 尝试打开文件
+    if (file.good()) { // 检查文件是否存在
+        file.close();
+        index_->loadIndex(file_path, space_, max_elements_);
+    } else {
+        global_logger->warn("File not found: {}. Skipping loading index.", file_path);
     }
 }
 

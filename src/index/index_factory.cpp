@@ -28,4 +28,44 @@ auto IndexFactory::GetIndex(IndexType type) const -> void* {
     }
     return nullptr;
 }
+
+void IndexFactory::SaveIndex(const std::string& folder_path) { // 添加 ScalarStorage 参数
+
+    for (const auto& index_entry : index_map_) {
+        IndexType index_type = index_entry.first;
+        void* index = index_entry.second;
+
+        // 为每个索引类型生成一个文件名
+        std::string file_path = folder_path + std::to_string(static_cast<int>(index_type)) + ".index";
+
+        // 根据索引类型调用相应的 saveIndex 函数
+        if (index_type == IndexType::FLAT) {
+            static_cast<FaissIndex*>(index)->SaveIndex(file_path);
+        } else if (index_type == IndexType::HNSW) {
+            static_cast<HNSWLibIndex*>(index)->SaveIndex(file_path);
+        } else if (index_type == IndexType::FILTER) { // 保存 FilterIndex 类型的索引
+            static_cast<FilterIndex*>(index)->SaveIndex(file_path);
+        }
+    }
+}
+
+void IndexFactory::LoadIndex(const std::string& folder_path) { // 添加 loadIndex 方法实现
+    for (const auto& index_entry : index_map_) {
+        IndexType index_type = index_entry.first;
+        void* index = index_entry.second;
+
+        // 为每个索引类型生成一个文件名
+        std::string file_path = folder_path + std::to_string(static_cast<int>(index_type)) + ".index";
+
+        // 根据索引类型调用相应的 loadIndex 函数
+        if (index_type == IndexType::FLAT) {
+            static_cast<FaissIndex*>(index)->LoadIndex(file_path);
+        } else if (index_type == IndexType::HNSW) {
+            static_cast<HNSWLibIndex*>(index)->LoadIndex(file_path);
+        } else if (index_type == IndexType::FILTER) { // 加载 FilterIndex 类型的索引
+            static_cast<FilterIndex*>(index)->LoadIndex(file_path);
+        }
+    }
+}
+
 }  // namespace vectordb

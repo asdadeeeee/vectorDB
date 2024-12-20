@@ -20,6 +20,7 @@ public:
     void ReloadDatabase(); // 添加 reloadDatabase 方法声明
     void WriteWalLog(const std::string& operation_type, const rapidjson::Document& json_data); // 添加 writeWALLog 方法声明
     auto GetIndexTypeFromRequest(const rapidjson::Document& json_request) -> vectordb::IndexFactory::IndexType; 
+    void TakeSnapshot();
 private:
     ScalarStorage scalar_storage_;
     Persistence persistence_; // 添加 Persistence 对象

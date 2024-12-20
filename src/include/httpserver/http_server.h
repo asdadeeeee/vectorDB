@@ -24,6 +24,7 @@ private:
 
     void UpsertHandler(const httplib::Request& req, httplib::Response& res);
     void QueryHandler(const httplib::Request& req, httplib::Response& res);
+    void SnapshotHandler(const httplib::Request& req, httplib::Response& res);
     void SetJsonResponse(const rapidjson::Document& json_response, httplib::Response& res);
     void SetErrorJsonResponse(httplib::Response& res, int error_code, const std::string& errorMsg); 
     auto IsRequestValid(const rapidjson::Document& json_request, CheckType check_type) -> bool;

@@ -29,7 +29,11 @@ void Cfg::ParseCfgFile(const std::string &path) {
   } else {
     std::cout << "WAL_PATH fault" << std::endl;
   }
-
+  if (data.HasMember("SNAP_PATH") && data["SNAP_PATH"].IsString()) {
+    snap_path_ = data["SNAP_PATH"].GetString();
+  } else {
+    std::cout << "SNAP_PATH fault" << std::endl;
+  }
 
   if (data.HasMember("LOG") && data["LOG"].IsObject()) {
     if (data["LOG"].HasMember("LOG_NAME") && data["LOG"]["LOG_NAME"].IsString()) {
@@ -39,16 +43,14 @@ void Cfg::ParseCfgFile(const std::string &path) {
     }
 
     if (data["LOG"].HasMember("LOG_LEVEL") && data["LOG"]["LOG_LEVEL"].IsInt()) {
-      m_log_cfg_.m_level_ = static_cast<spdlog::level::level_enum>( data["LOG"]["LOG_LEVEL"].GetInt());
+      m_log_cfg_.m_level_ = static_cast<spdlog::level::level_enum>(data["LOG"]["LOG_LEVEL"].GetInt());
     } else {
       std::cout << "LOG_LEVEL fault" << std::endl;
     }
 
-
   } else {
     std::cout << "LOG fault" << std::endl;
   }
-
 }
 
 }  // namespace vectordb

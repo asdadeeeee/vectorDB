@@ -34,6 +34,8 @@ void Persistence::Init(const std::string &local_path) {
                          std::strerror(errno));  // 使用日志打印错误消息和原因
     throw std::runtime_error("Failed to open WAL log file at path: " + local_path);
   }
+
+  LoadLastSnapshotId(Cfg::Instance().SnapPath());
 }
 
 auto Persistence::IncreaseId() -> uint64_t {
@@ -77,7 +79,7 @@ void Persistence::ReadNextWalLog(std::string *operation_type, rapidjson::Documen
   global_logger->debug("Reading next WAL log entry");
 
   std::string compressed_line;
-  if (std::getline(wal_log_file_, compressed_line)) {
+  while (std::getline(wal_log_file_, compressed_line)) {
     std::string decompressed_data;
     if (!snappy::Uncompress(compressed_line.c_str(), compressed_line.size(), &decompressed_data)) {
       global_logger->error("Failed to decompress WAL log entry");
@@ -101,14 +103,61 @@ void Persistence::ReadNextWalLog(std::string *operation_type, rapidjson::Documen
       increase_id_ = log_id;                    // 更新 increase_id_
     }
 
-    json_data->Parse(json_data_str.c_str());  // 使用指针参数返回 json_data
-
-    global_logger->debug("Read WAL log entry: log_id={}, operation_type={}, json_data_str={}", log_id_str,
+    if (log_id > last_snapshot_id_) {
+      json_data->Parse(json_data_str.c_str());  // 使用指针参数返回 json_data
+      global_logger->debug("Read WAL log entry: log_id={}, operation_type={}, json_data_str={}", log_id_str,
+                           *operation_type, json_data_str);
+      return;
+    }
+    // TODO(zhouzj): 增加last_snapshot_id_ 前WAL LOG的清除
+    global_logger->debug("Skip Read WAL log entry: log_id={}, operation_type={}, json_data_str={}", log_id_str,
                          *operation_type, json_data_str);
-  } else {
-    wal_log_file_.clear();
-    global_logger->debug("No more WAL log entries to read");
   }
+  operation_type->clear();
+  wal_log_file_.clear();
+  global_logger->debug("No more WAL log entries to read");
+}
+
+void Persistence::TakeSnapshot() {          // 移除 takeSnapshot 方法的参数
+  global_logger->debug("Taking snapshot");  // 添加调试信息
+
+  last_snapshot_id_ = increase_id_;
+  std::string snapshot_folder_path = Cfg::Instance().SnapPath();
+  auto &index_factory = IndexFactory::Instance();  // 通过全局指针获取 IndexFactory 实例
+  index_factory.SaveIndex(snapshot_folder_path);
+  SaveLastSnapshotId(snapshot_folder_path);
+}
+
+void Persistence::LoadSnapshot() {           // 添加 loadSnapshot 方法实现
+  global_logger->debug("Loading snapshot");  // 添加调试信息
+  auto &index_factory = IndexFactory::Instance();
+  std::string snapshot_folder_path = Cfg::Instance().SnapPath();
+  index_factory.LoadIndex(snapshot_folder_path);  // 将 scalar_storage 传递给 loadIndex 方法
+}
+
+void Persistence::SaveLastSnapshotId(const std::string &folder_path) {  // 添加 saveLastSnapshotID 方法实现
+  std::string file_path = folder_path + "MaxLogID";
+  std::ofstream file("file_path");
+  if (file.is_open()) {
+    file << last_snapshot_id_;
+    file.close();
+  } else {
+    global_logger->error("Failed to open file snapshots_MaxID for writing");
+  }
+  global_logger->debug("save snapshot Max log ID {}", last_snapshot_id_);  // 添加调试信息
+}
+
+void Persistence::LoadLastSnapshotId(const std::string &folder_path) {  // 添加 loadLastSnapshotID 方法实现
+  std::string file_path = folder_path + ".MaxLogID";
+  std::ifstream file("file_path");
+  if (file.is_open()) {
+    file >> last_snapshot_id_;
+    file.close();
+  } else {
+    global_logger->warn("Failed to open file snapshots_MaxID for reading");
+  }
+
+  global_logger->debug("Loading snapshot Max log ID {}", last_snapshot_id_);  // 添加调试信息
 }
 
 }  // namespace vectordb

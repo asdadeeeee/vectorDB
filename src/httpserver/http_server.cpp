@@ -25,6 +25,11 @@ HttpServer::HttpServer(std::string &host, int port, VectorDatabase *vector_datab
   server_.Post("/query", [this](const httplib::Request &req, httplib::Response &res) {  // 注册query接口
     QueryHandler(req, res);
   });
+
+  server_.Post("/admin/snapshot",
+               [this](const httplib::Request &req, httplib::Response &res) {  // 添加 /admin/snapshot 请求处理程序
+                 SnapshotHandler(req, res);
+               });
 }
 
 void HttpServer::Start() { server_.listen(host_, port_); }
@@ -242,7 +247,6 @@ void HttpServer::UpsertHandler(const httplib::Request &req, httplib::Response &r
   // 在 upsert 调用之后调用 VectorDatabase::writeWALLog
   vector_database_->WriteWalLog("upsert", json_request);
 
-
   rapidjson::Document json_response;
   json_response.SetObject();
   rapidjson::Document::AllocatorType &response_allocator = json_response.GetAllocator();
@@ -290,7 +294,19 @@ void HttpServer::QueryHandler(const httplib::Request &req, httplib::Response &re
   json_response.AddMember(RESPONSE_RETCODE, RESPONSE_RETCODE_SUCCESS, allocator);
   SetJsonResponse(json_response, res);
 }
+void HttpServer::SnapshotHandler(const httplib::Request &req, httplib::Response &res) {
+  global_logger->debug("Received snapshot request");
 
+  vector_database_->TakeSnapshot();  // 调用 VectorDatabase::takeSnapshot
+
+  rapidjson::Document json_response;
+  json_response.SetObject();
+  rapidjson::Document::AllocatorType &allocator = json_response.GetAllocator();
+
+  // 设置响应
+  json_response.AddMember(RESPONSE_RETCODE, RESPONSE_RETCODE_SUCCESS, allocator);
+  SetJsonResponse(json_response, res);
+}
 void HttpServer::SetJsonResponse(const rapidjson::Document &json_response, httplib::Response &res) {
   rapidjson::StringBuffer buffer;
   rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);

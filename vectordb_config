@@ -1,6 +1,7 @@
 {
     "ROCKS_DB_PATH" : "/home/zhouzj/vectordb/storage",
     "WAL_PATH" : "/home/zhouzj/vectordb/wal",
+    "SNAP_PATH" : "/home/zhouzj/vectordb/snap/",
     "LOG":{
         "LOG_NAME" : "my_log",
         "LOG_LEVEL" : 1

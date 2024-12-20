@@ -21,6 +21,9 @@ VectorDatabase::VectorDatabase(const std::string &db_path, const std::string& wa
 
 void VectorDatabase::ReloadDatabase() {
     global_logger->info("Entering VectorDatabase::reloadDatabase()"); // 在方法开始时打印日志
+
+    persistence_.LoadSnapshot();
+
     std::string operation_type;
     rapidjson::Document json_data;
     persistence_.ReadNextWalLog(&operation_type, &json_data); // 通过指针的方式调用 readNextWALLog
@@ -211,6 +214,8 @@ auto VectorDatabase::Search(const rapidjson::Document& json_request) -> std::pai
     delete filter_bitmap;
     return results;
 }
-
+void VectorDatabase::TakeSnapshot() { // 添加 takeSnapshot 方法实现
+    persistence_.TakeSnapshot();
+}
 
 }  // namespace vectordb

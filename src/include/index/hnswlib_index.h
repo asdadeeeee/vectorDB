@@ -17,6 +17,9 @@ public:
 
     void RemoveVectors(const std::vector<int64_t>& ids);
 
+    void SaveIndex(const std::string& file_path); // 添加 saveIndex 方法声明
+    void LoadIndex(const std::string& file_path); // 添加 loadIndex 方法声明
+
         // 定义 RoaringBitmapIDFilter 类
     class RoaringBitmapIDFilter : public hnswlib::BaseFilterFunctor {
     public:
@@ -34,6 +37,7 @@ private:
     // int dim_;
     hnswlib::SpaceInterface<float>* space_;
     hnswlib::HierarchicalNSW<float>* index_;
+    size_t max_elements_; // 添加 max_elements 成员变量
 };
 }  // namespace vectordb
 

@@ -32,6 +32,11 @@ public:
     {
         return wal_path_;
     }
+    auto SnapPath() const noexcept -> const std::string &
+    {
+        return snap_path_;
+    }
+
     auto GlogName() const noexcept -> const std::string &
     {
         return m_log_cfg_.m_glog_name_;
@@ -52,6 +57,7 @@ private:
 
     std::string m_rocks_db_path_;
     std::string wal_path_;
+    std::string snap_path_;
     LogCfg m_log_cfg_;
 
     static std::string cfg_path;

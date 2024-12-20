@@ -24,6 +24,9 @@ public:
 
     void Init(IndexType type, int dim,  int num_data, MetricType metric = MetricType::L2);
     auto GetIndex(IndexType type) const -> void*;
+     void SaveIndex(const std::string& folder_path); // 添加 ScalarStorage 参数
+    void LoadIndex(const std::string& folder_path); // 添加 loadIndex 方法声明
+
 
 
 private:

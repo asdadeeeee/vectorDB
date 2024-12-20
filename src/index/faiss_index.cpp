@@ -5,6 +5,8 @@
 #include <vector>
 #include "common/constants.h"
 #include "logger/logger.h"
+#include <faiss/index_io.h> // 更正头文件
+#include <fstream>
 
 namespace vectordb {
 FaissIndex::FaissIndex(faiss::Index *index) : index_(index) {}
@@ -55,6 +57,21 @@ void FaissIndex::RemoveVectors(const std::vector<int64_t> &ids) {  // 添加remo
   } else {
     throw std::runtime_error("Underlying Faiss index is not an IndexIDMap");
   }
+}
+
+void FaissIndex::SaveIndex(const std::string& file_path) { // 添加 saveIndex 方法实现
+    faiss::write_index(index_, file_path.c_str());
+}
+
+void FaissIndex::LoadIndex(const std::string& file_path) { // 添加 loadIndex 方法实现
+    std::ifstream file(file_path); // 尝试打开文件
+    if (file.good()) { // 检查文件是否存在
+        file.close();
+        delete index_;
+        index_ = faiss::read_index(file_path.c_str());
+    } else {
+        global_logger->warn("File not found: {}. Skipping loading index.", file_path);
+    }
 }
 
 }  // namespace vectordb
