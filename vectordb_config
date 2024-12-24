@@ -2,6 +2,9 @@
     "ROCKS_DB_PATH" : "/home/zhouzj/vectordb/storage",
     "WAL_PATH" : "/home/zhouzj/vectordb/wal",
     "SNAP_PATH" : "/home/zhouzj/vectordb/snap/",
+    "TEST_ROCKS_DB_PATH" : "/home/zhouzj/test_vectordb/storage",
+    "TEST_WAL_PATH" : "/home/zhouzj/test_vectordb/wal",
+    "TEST_SNAP_PATH" : "/home/zhouzj/test_vectordb/snap/",
     "LOG":{
         "LOG_NAME" : "my_log",
         "LOG_LEVEL" : 1

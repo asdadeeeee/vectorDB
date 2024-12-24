@@ -16,43 +16,24 @@ set(VECTORDB_LIBS
         )
 
 
-
-FIND_PACKAGE(BLAS REQUIRED)
-if(BLAS_FOUND)
-    message("BLAS FOUND")
-endif()
-
-FIND_PACKAGE( OpenMP REQUIRED)
-if(OPENMP_FOUND)
-    message("OPENMP FOUND")
-endif()
-
-find_package(roaring REQUIRED)
-
-find_library(ROCKSDB_LIB rocksdb)
-if(ROCKSDB_LIB)
-    message("rocksdb FOUND")
-endif()
-
-find_library(SNAPPY_LIB snappy)
-if(SNAPPY_LIB)
-    message("snappy FOUND")
-endif()
-
-set(VECTORDB_THIRDPARTY_LIBS
-    faiss 
-    blas
-    OpenMP::OpenMP_CXX
-    roaring::roaring
-    ${ROCKSDB_LIB}
-    ${SNAPPY_LIB}
+set(WL_START_GROUP "-Wl,--start-group")
+set(WL_END_GROUP "-Wl,--end-group")
+set(LINK_LIBS ${LINK_LIBS}
+        ${WL_START_GROUP}
+        ${THIRD_PARTY_LIB}
+        ${WL_END_GROUP}
+        ${PROTO_LIB}
+        ${VECTORDB_LIBS}
+        -fopenmp
+        -lpthread
+        -lstdc++fs
+        -lzstd
+        -lgfortran
+        -ldl
     )
 
-
-target_link_libraries(
-    vectorDB
-    ${VECTORDB_LIBS}
-    ${VECTORDB_THIRDPARTY_LIBS})
+message(STATUS "Link_libs: ${LINK_LIBS}")
+target_link_libraries(vectorDB ${LINK_LIBS})
 
 target_include_directories(
         vectorDB PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

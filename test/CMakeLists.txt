@@ -26,6 +26,7 @@ foreach (vectordb_test_source ${VECTORDB_TEST_SOURCES})
     string(REPLACE ".cpp" "" vectordb_test_name ${vectordb_test_filename})
 
     # Add the test target separately and as part of "make check-tests".
+    #add_executable(${vectordb_test_name} EXCLUDE_FROM_ALL ${vectordb_test_source})
     add_executable(${vectordb_test_name} EXCLUDE_FROM_ALL ${vectordb_test_source} "${PROJECT_SOURCE_DIR}/tools/backtrace.cpp")
     add_backward(${vectordb_test_name})
     add_dependencies(build-tests ${vectordb_test_name})
@@ -39,8 +40,11 @@ foreach (vectordb_test_source ${VECTORDB_TEST_SOURCES})
             PROPERTIES
             TIMEOUT 120
             )
-
+         
     target_link_libraries(${vectordb_test_name} vectorDB gtest gmock_main)
+
+
+    
 
     # Set test target properties and dependencies.
     set_target_properties(${vectordb_test_name}

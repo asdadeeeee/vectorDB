@@ -9,7 +9,6 @@
 #include "index/hnswlib_index.h"
 #include "index/index_factory.h"
 #include "logger/logger.h"
-#include "stringbuffer.h"
 #include <rapidjson/stringbuffer.h> // 包含 rapidjson/stringbuffer.h 以使用 StringBuffer 类
 #include <rapidjson/writer.h> // 包含 rapidjson/writer.h 以使用 Writer 类
 

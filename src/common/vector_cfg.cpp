@@ -1,7 +1,7 @@
 #include "common/vector_cfg.h"
 #include <fstream>
 #include <iostream>
-#include "istreamwrapper.h"
+
 
 namespace vectordb {
 
@@ -17,6 +17,25 @@ void Cfg::ParseCfgFile(const std::string &path) {
   data.ParseStream(isw);
 
   assert(data.IsObject());
+
+
+  if (data.HasMember("TEST_ROCKS_DB_PATH") && data["TEST_ROCKS_DB_PATH"].IsString()) {
+    test_rocks_db_path_ = data["TEST_ROCKS_DB_PATH"].GetString();
+  } else {
+    std::cout << "TEST_ROCKS_DB_PATH fault" << std::endl;
+  }
+
+  if (data.HasMember("TEST_WAL_PATH") && data["TEST_WAL_PATH"].IsString()) {
+    test_wal_path_ = data["TEST_WAL_PATH"].GetString();
+  } else {
+    std::cout << "TEST_WAL_PATH fault" << std::endl;
+  }
+  if (data.HasMember("TEST_SNAP_PATH") && data["TEST_SNAP_PATH"].IsString()) {
+    test_snap_path_ = data["TEST_SNAP_PATH"].GetString();
+  } else {
+    std::cout << "TEST_SNAP_PATH fault" << std::endl;
+  }
+
 
   if (data.HasMember("ROCKS_DB_PATH") && data["ROCKS_DB_PATH"].IsString()) {
     m_rocks_db_path_ = data["ROCKS_DB_PATH"].GetString();

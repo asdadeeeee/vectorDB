@@ -1,15 +1,14 @@
 #include "index/faiss_index.h"
 #include "index/hnswlib_index.h"
-#include <common.h>
 #include <logger/logger.h>
 #include <cstdint>
 #include "gtest/gtest.h"
 #include "index/index_factory.h"
+#include "common/vector_init.h"
 namespace vectordb {
 // NOLINTNEXTLINE
 TEST(IndexTest, HNSWSampleTest) {
-  InitGlobalLogger();
-  SetLogLevel(spdlog::level::debug);
+  Init();
   int dim = 1;  // 向量维度
   auto &indexfactory = IndexFactory::Instance();
   IndexFactory::IndexType index_type = IndexFactory::IndexType::HNSW;

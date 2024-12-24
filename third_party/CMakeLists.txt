@@ -1,8 +1,35 @@
+add_library(third_party_lib INTERFACE)
 
-# set(gtest_force_shared_crt ON CACHE BOOL "" FORCE) # don't override our compiler/linker options when building gtest
-add_subdirectory(googletest-1.15.2)
-add_subdirectory(backward-cpp)
+set(STATIC_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/installed/lib)
 
-set_source_files_properties(httplib.h PROPERTIES SKIP_CLANG_TIDY ON)
-# set(FORT_ENABLE_TESTING OFF CACHE INTERNAL "")
+set(LIB_LIST
+    faiss
+    openblas
+    brpc
+    gflags
+    protobuf
+    glog
+    crypto
+    leveldb
+    ssl
+    z
+    rocksdb
+    snappy
+    lz4
+    bz2
+    roaring
+)
+
+foreach(lib_name IN LISTS LIB_LIST)
+    set(lib_path ${STATIC_LIB_DIR}/lib${lib_name}.a)
+    message(STATUS "Importing ${lib_name} ${lib_path}")
+    add_library(${lib_name} STATIC IMPORTED)
+    set_target_properties(${lib_name} PROPERTIES IMPORTED_LOCATION ${lib_path})
+
+    target_link_libraries(third_party_lib INTERFACE ${lib_name})
+endforeach()
+
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/googletest-1.15.2)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/backward-cpp-1.6)
+set(THIRD_PARTY_LIB ${THIRD_PARTY_LIB} third_party_lib PARENT_SCOPE)
 

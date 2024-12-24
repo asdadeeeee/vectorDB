@@ -1,5 +1,5 @@
 #include "index/faiss_index.h"
-#include <common.h>
+#include <experimental/filesystem>
 #include <logger/logger.h>
 #include <cstdint>
 #include "gtest/gtest.h"
@@ -10,7 +10,8 @@ namespace vectordb {
 // NOLINTNEXTLINE
 TEST(ScalarTest, SampleTest){
     Init();
-    ScalarStorage storage(Cfg::Instance().RocksDbPath());
+    std::experimental::filesystem::remove_all(Cfg::Instance().TestRocksDbPath());
+    ScalarStorage storage(Cfg::Instance().TestRocksDbPath());
 
     rapidjson::Document doc;
     doc.SetObject();
@@ -23,7 +24,7 @@ TEST(ScalarTest, SampleTest){
     EXPECT_EQ(res1["value"],10);
 
 
-     rapidjson::Document doc2;
+    rapidjson::Document doc2;
     doc2.SetObject();
     rapidjson::Document::AllocatorType& allocator2 = doc2.GetAllocator();
 

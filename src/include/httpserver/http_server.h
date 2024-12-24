@@ -1,6 +1,6 @@
 #pragma once
 #include "index/faiss_index.h"
-#include "httplib.h"
+#include "httplib/httplib.h"
 #include "index/index_factory.h"
 #include "database/vector_database.h"
 #include <rapidjson/document.h>

@@ -8,7 +8,6 @@
 #include <sstream>
 #include <string>
 #include "common/vector_utils.h"
-#include "logger.h"
 #include "logger/logger.h"
 namespace vectordb {
 

@@ -1,5 +1,4 @@
 #include "index/filter_index.h"
-#include <common.h>
 #include <logger/logger.h>
 #include <cstdint>
 #include "common/vector_init.h"

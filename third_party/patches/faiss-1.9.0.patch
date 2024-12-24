@@ -1,0 +1,22 @@
+diff --git a/faiss/CMakeLists.txt b/faiss/CMakeLists.txt
+index 2871d97..2cf23bc 100644
+--- a/faiss/CMakeLists.txt
++++ b/faiss/CMakeLists.txt
+@@ -354,13 +354,16 @@ target_link_libraries(faiss_avx2 PRIVATE OpenMP::OpenMP_CXX)
+ target_link_libraries(faiss_avx512 PRIVATE OpenMP::OpenMP_CXX)
+ target_link_libraries(faiss_sve PRIVATE OpenMP::OpenMP_CXX)
+ 
++option(TP_INSTALL_DIR "Third party install dir")
++message("Third party install dir: ${TP_INSTALL_DIR}")
++
+ find_package(MKL)
+ if(MKL_FOUND)
+   target_link_libraries(faiss PRIVATE ${MKL_LIBRARIES})
+   target_link_libraries(faiss_avx2 PRIVATE ${MKL_LIBRARIES})
+   target_link_libraries(faiss_avx512 PRIVATE ${MKL_LIBRARIES})
+ else()
+-  find_package(BLAS REQUIRED)
++  find_library(BLAS_LIBRARIES NAMES openblas PATHS ${TP_INSTALL_DIR}/lib)
+   target_link_libraries(faiss PRIVATE ${BLAS_LIBRARIES})
+   target_link_libraries(faiss_avx2 PRIVATE ${BLAS_LIBRARIES})
+   target_link_libraries(faiss_avx512 PRIVATE ${BLAS_LIBRARIES})

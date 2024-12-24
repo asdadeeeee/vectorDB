@@ -1,4 +1,3 @@
-#include <common.h>
 #include <logger/logger.h>
 #include <cstdint>
 #include "common/vector_init.h"
@@ -6,11 +5,13 @@
 #include "gtest/gtest.h"
 #include "index/faiss_index.h"
 #include "index/index_factory.h"
+#include <experimental/filesystem>
 namespace vectordb {
 // NOLINTNEXTLINE
 TEST(DatabaseTest, SampleTest) {
   Init();
-  VectorDatabase db(Cfg::Instance().RocksDbPath());
+  std::experimental::filesystem::remove_all(Cfg::Instance().TestRocksDbPath());
+  VectorDatabase db(Cfg::Instance().TestRocksDbPath(),Cfg::Instance().TestWalPath());
   rapidjson::Document doc;
   doc.SetObject();
   rapidjson::Document::AllocatorType &allocator = doc.GetAllocator();

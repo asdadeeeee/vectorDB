@@ -1,5 +1,4 @@
 #include "index/faiss_index.h"
-#include <common.h>
 #include <logger/logger.h>
 #include <strings.h>
 #include <cstdint>

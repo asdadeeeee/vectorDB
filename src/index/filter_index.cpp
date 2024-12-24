@@ -5,7 +5,6 @@
 #include <memory>
 #include <set>
 #include <sstream>
-#include "logger.h"  // 包含 logger.h 以使用日志记录器
 #include "logger/logger.h"
 #include "snappy.h"
 namespace vectordb {

@@ -37,6 +37,19 @@ public:
         return snap_path_;
     }
 
+    auto TestRocksDbPath() const noexcept -> const std::string &
+    {
+        return test_rocks_db_path_;
+    }
+    auto TestWalPath() const noexcept -> const std::string &
+    {
+        return test_wal_path_;
+    }
+    auto TestSnapPath() const noexcept -> const std::string &
+    {
+        return test_snap_path_;
+    }
+
     auto GlogName() const noexcept -> const std::string &
     {
         return m_log_cfg_.m_glog_name_;
@@ -59,6 +72,10 @@ private:
     std::string wal_path_;
     std::string snap_path_;
     LogCfg m_log_cfg_;
+
+    std::string test_rocks_db_path_;
+    std::string test_wal_path_;
+    std::string test_snap_path_;
 
     static std::string cfg_path;
 };

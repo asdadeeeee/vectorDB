@@ -247,3 +247,5 @@ docs/dev
 # Submission zip files
 *.zip
 *.tar*
+third_party/installed
+third_party/src

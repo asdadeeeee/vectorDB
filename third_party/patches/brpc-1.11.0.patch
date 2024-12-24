@@ -1,0 +1,12 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index e29a1c3..7369f19 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -307,6 +307,7 @@ if(WITH_RDMA)
+     list(APPEND DYNAMIC_LIB ${RDMA_LIB})
+ endif()
+ 
++link_directories(${CMAKE_LIBRARY_PATH})
+ set(BRPC_PRIVATE_LIBS "-lgflags -lprotobuf -lleveldb -lprotoc -lssl -lcrypto -ldl -lz")
+ 
+ if(WITH_GLOG)
