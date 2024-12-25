@@ -60,6 +60,12 @@ public:
         return static_cast<spdlog::level::level_enum>(m_log_cfg_.m_level_);
     }
 
+        
+    auto Port() const noexcept -> int
+    {
+        return port_;
+    }
+
 private:
     Cfg()
     {
@@ -76,6 +82,7 @@ private:
     std::string test_rocks_db_path_;
     std::string test_wal_path_;
     std::string test_snap_path_;
+    int port_;
 
     static std::string cfg_path;
 };

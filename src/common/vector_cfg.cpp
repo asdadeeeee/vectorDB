@@ -2,6 +2,32 @@
 #include <fstream>
 #include <iostream>
 
+// example vectordb_config:
+
+// {
+//     "ROCKS_DB_PATH" : "/home/zhouzj/vectordb/storage",
+//     "WAL_PATH" : "/home/zhouzj/vectordb/wal",
+//     "SNAP_PATH" : "/home/zhouzj/vectordb/snap/",
+//     "TEST_ROCKS_DB_PATH" : "/home/zhouzj/test_vectordb/storage",
+//     "TEST_WAL_PATH" : "/home/zhouzj/test_vectordb/wal",
+//     "TEST_SNAP_PATH" : "/home/zhouzj/test_vectordb/snap/",
+//     "LOG":{
+//         "LOG_NAME" : "my_log",
+//         "LOG_LEVEL" : 1
+//     },
+//     "PORT" : 7777
+// }
+
+//     vdb_server use these:
+//     "ROCKS_DB_PATH" : "/home/zhouzj/vectordb/storage",
+//     "WAL_PATH" : "/home/zhouzj/vectordb/wal",
+//     "SNAP_PATH" : "/home/zhouzj/vectordb/snap/",
+//     "PORT" : 7777
+
+//     gtest use these:
+//     "TEST_ROCKS_DB_PATH" : "/home/zhouzj/test_vectordb/storage",
+//     "TEST_WAL_PATH" : "/home/zhouzj/test_vectordb/wal",
+//     "TEST_SNAP_PATH" : "/home/zhouzj/test_vectordb/snap/",
 
 namespace vectordb {
 
@@ -69,6 +95,13 @@ void Cfg::ParseCfgFile(const std::string &path) {
 
   } else {
     std::cout << "LOG fault" << std::endl;
+  }
+
+
+  if (data.HasMember("PORT") && data["PORT"].IsInt()) {
+    port_ = data["PORT"].GetInt();
+  } else {
+    std::cout << "PORT fault" << std::endl;
   }
 }
 

@@ -8,5 +8,6 @@
     "LOG":{
         "LOG_NAME" : "my_log",
         "LOG_LEVEL" : 1
-    }
+    },
+    "PORT" : 7777
 }

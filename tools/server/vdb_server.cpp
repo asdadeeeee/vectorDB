@@ -14,7 +14,7 @@ auto main() -> int {
     std::string host = "localhost";
     vectordb::VectorDatabase vector_database(vectordb::Cfg::Instance().RocksDbPath(),vectordb::Cfg::Instance().WalPath());
     vector_database.ReloadDatabase();
-    vectordb::HttpServer server(host, 8080,&vector_database);
+    vectordb::HttpServer server(host, vectordb::Cfg::Instance().Port(),&vector_database);
     vectordb::global_logger->info("HttpServer created");
     server.Start();
 

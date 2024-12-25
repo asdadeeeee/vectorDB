@@ -500,3 +500,5 @@ function build() {
 }
 
 build $PACKAGE
+
+# appreciate Xiaoccer , the original build.sh from git@github.com:Xiaoccer/TinyVecDB.git

@@ -1,7 +1,8 @@
 #==============================================================================#
 # This file specifies intentionally untracked files that git should ignore.
 #==============================================================================#
-/GRADESCOPE.md
+third_party/installed
+third_party/src
 
 #==============================================================================#
 # File extensions to be ignored anywhere in the tree.
@@ -247,5 +248,3 @@ docs/dev
 # Submission zip files
 *.zip
 *.tar*
-third_party/installed
-third_party/src
