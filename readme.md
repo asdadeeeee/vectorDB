@@ -2,6 +2,11 @@
 
 a vector database implementation based on 《从零构建向量数据库》
 
+支持FaissIndex，HnswlibIndex；
+支持标量向量混合查询；
+支持数据持久化存储；
+使用http请求对数据库发起访问，插入或查询vector
+
 ## How to build
 
 ### Prepare environment variables
