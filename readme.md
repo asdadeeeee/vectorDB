@@ -12,7 +12,7 @@ a vector database implementation based on 《从零构建向量数据库》
 ### Prepare environment variables
 
 ```shell
-echo "export CODE_BASE=_______" >> ~/.bashrc  # openGauss-server的路径，例如/home/zhouzj/vectorDB/vectorDB
+echo "export VECTORDB_CODE_BASE=_______" >> ~/.bashrc  #代码根路径，例如/home/zhouzj/project/vectorDB
 source ~/.bashrc
 ```
 
