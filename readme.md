@@ -133,6 +133,9 @@ $ .faiss_index_test
 * gtest
 * backward-cpp
 
+### Repository
+非常感谢 Xiaoccer , third_party下的文件基于 [TineVecDB](https://github.com/Xiaoccer/TinyVecDB.git) 中的third_party进行修改
+
 ## License
 
 vectorDB is licensed under the MIT License. For more details, please refer to the [LICENSE](./LICENSE) file.
