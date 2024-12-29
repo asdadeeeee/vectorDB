@@ -78,6 +78,14 @@ mkdir snap
 mkdir storage
 ```
 
+### Build protobuf
+After change the third_part/proto, you should run
+``` shell
+cd third_party
+bash build.sh --package protobuf
+```
+to rebuild .pb.h and .pb.cc
+
 ### Start Server
 Switch to the project directory:
 
@@ -139,6 +147,8 @@ $ .faiss_index_test
 ## License
 
 vectorDB is licensed under the MIT License. For more details, please refer to the [LICENSE](./LICENSE) file.
+
+
 
 ## Optimization
 目前已完成《从零构建向量数据库》前四章所有内容，并在此之上做如下优化：
