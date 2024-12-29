@@ -134,7 +134,7 @@ $ .faiss_index_test
 * backward-cpp
 
 ### Repository
-非常感谢 Xiaoccer , third_party下的文件基于 [TineVecDB](https://github.com/Xiaoccer/TinyVecDB.git) 中的third_party进行修改
+非常感谢 Xiaoccer , third_party下的patches,build.sh,CMakeLists.txt基于 [TineVecDB](https://github.com/Xiaoccer/TinyVecDB.git) 中third_party下的内容进行修改
 
 ## License
 
