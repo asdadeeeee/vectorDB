@@ -305,6 +305,17 @@ function build_protobuf() {
         -DZLIB_LIBRARY="${TP_LIB_DIR}/libz.a" \
         -DCMAKE_INSTALL_PREFIX="${TP_INSTALL_DIR}" ../
     make -j ${PARALLEL} install
+    parse_proto
+}
+
+function parse_proto(){
+PROTO_FOLDER=${TP_DIR}/proto
+
+rm -rf ${PROTO_FOLDER}/*.pb.h
+rm -rf ${PROTO_FOLDER}/*.pb.cc
+chmod +x ${TP_INSTALL_DIR}/bin/protoc
+${TP_INSTALL_DIR}/bin/protoc --cpp_out=$PROTO_FOLDER -I $PROTO_FOLDER $PROTO_FOLDER/*.proto
+echo "rebuild proto finished"
 }
 
 function build_leveldb() {

@@ -1,3 +1,4 @@
+#include <string>
 #include "common/vector_cfg.h"
 #include "httpserver/http_server.h"
 #include "index/index_factory.h"
@@ -14,9 +15,18 @@ auto main() -> int {
     std::string host = "localhost";
     vectordb::VectorDatabase vector_database(vectordb::Cfg::Instance().RocksDbPath(),vectordb::Cfg::Instance().WalPath());
     vector_database.ReloadDatabase();
-    vectordb::HttpServer server(host, vectordb::Cfg::Instance().Port(),&vector_database);
+    vectordb::HttpServer server;
+    server.Init(&vector_database);
     vectordb::global_logger->info("HttpServer created");
-    server.Start();
+    std::string server_addr = "localhost:"+std::to_string(vectordb::Cfg::Instance().Port());
+    LOG(INFO) << "listen at:" << server_addr;
+    brpc::ServerOptions options;
+    if (server.Start(server_addr.c_str(), &options) != 0) {
+        LOG(ERROR) << "Failed to start server";
+        return -1;
+    }
+
+    server.RunUntilAskedToQuit();
 
     return 0;
 }

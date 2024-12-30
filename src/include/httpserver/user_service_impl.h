@@ -16,8 +16,6 @@ class UserServiceImpl : public nvm::UserService, public BaseServiceImpl {
   explicit UserServiceImpl(VectorDatabase *database) : vector_database_(database){};
   ~UserServiceImpl() override = default;
 
-  enum class CheckType { SEARCH, INSERT, UPSERT };
-
   void search(::google::protobuf::RpcController *controller, const ::nvm::HttpRequest * /*request*/,
               ::nvm::HttpResponse * /*response*/, ::google::protobuf::Closure *done) override;
 

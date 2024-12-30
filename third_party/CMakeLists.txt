@@ -32,4 +32,6 @@ endforeach()
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/googletest-1.15.2)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/backward-cpp-1.6)
 set(THIRD_PARTY_LIB ${THIRD_PARTY_LIB} third_party_lib PARENT_SCOPE)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/proto)
+set(PROTO_LIB ${PROTO_LIB} PARENT_SCOPE)
 

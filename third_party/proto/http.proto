@@ -1,0 +1,21 @@
+syntax="proto3";
+
+package nvm;
+
+option cc_generic_services = true;
+
+// H2
+message HttpRequest { };
+message HttpResponse { };
+
+service UserService {
+rpc search(HttpRequest) returns (HttpResponse);
+rpc insert(HttpRequest) returns (HttpResponse);
+rpc upsert(HttpRequest) returns (HttpResponse);
+rpc query(HttpRequest) returns (HttpResponse);
+};
+
+service AdminService {
+rpc snapshot(HttpRequest) returns (HttpResponse);
+};
+

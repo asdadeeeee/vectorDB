@@ -19,7 +19,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 set(VECTORDB_SRC_INCLUDE_DIR  ${PROJECT_SOURCE_DIR}/src/include)
 set(VECTORDB_THIRD_PARTY_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/third_party/installed/include)
-set(PROTOS_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/protocol)
+set(PROTOS_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/third_party/proto)
 add_compile_options(-Wno-unused-function)
 include_directories(${VECTORDB_SRC_INCLUDE_DIR} ${VECTORDB_THIRD_PARTY_INCLUDE_DIR} ${PROTOS_INCLUDE_DIR})
 string(REPLACE "-Wno-unused-function" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
