@@ -18,6 +18,7 @@ public:
     auto IncreaseId() -> uint64_t;
     auto GetId() const -> uint64_t;
     void WriteWalLog(const std::string& operation_type, const rapidjson::Document& json_data, const std::string& version); // 添加 version 参数
+    void writeWALRawLog(uint64_t log_id, const std::string& operation_type, const std::string& raw_data, const std::string& version); // 添加 writeWALRawLog 函数声明
     void ReadNextWalLog(std::string* operation_type, rapidjson::Document* json_data); // 更改返回类型为 void 并添加指针参数
     void TakeSnapshot(); 
     void LoadSnapshot(); // 添加 loadSnapshot 方法声明

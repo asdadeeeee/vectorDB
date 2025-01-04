@@ -486,6 +486,7 @@ function build_nuraft() {
     cmake -B build .  -DCMAKE_INSTALL_PREFIX="${TP_INSTALL_DIR}" \
     make -C build -j ${PARALLEL} install
     cp src/event_awaiter.h ${TP_INCLUDE_DIR}/libnuraft
+    cp examples/backtrace.h ${TP_INCLUDE_DIR}/libnuraft
 }
 
 PACKAGES=(

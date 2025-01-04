@@ -37,7 +37,6 @@ void Persistence::Init(const std::string &local_path) {
   LoadLastSnapshotId(Cfg::Instance().SnapPath());
 }
 
-
 auto Persistence::IncreaseId() -> uint64_t {
   increase_id_++;
   return increase_id_;
@@ -72,6 +71,21 @@ void Persistence::WriteWalLog(const std::string &operation_type, const rapidjson
     global_logger->debug("Wrote WAL log entry: log_id={}, version={}, operation_type={}, json_data_str={}", log_id,
                          version, operation_type, buffer.GetString());  // 打印日志
     wal_log_file_.flush();                                              // 强制持久化
+  }
+}
+
+void Persistence::writeWALRawLog(uint64_t log_id, const std::string &operation_type, const std::string &raw_data,
+                                 const std::string &version) {
+  wal_log_file_ << log_id << "|" << version << "|" << operation_type << "|" << raw_data
+                << std::endl;  // 将 version 添加到日志格式中
+
+  if (wal_log_file_.fail()) {  // 检查是否发生错误
+    global_logger->error("An error occurred while writing the WAL raw log entry. Reason: {}",
+                         std::strerror(errno));  // 使用日志打印错误消息和原因
+  } else {
+    global_logger->debug("Wrote WAL raw log entry: log_id={}, version={}, operation_type={}, raw_data={}", log_id,
+                         version, operation_type, raw_data);  // 打印日志
+    wal_log_file_.flush();                                    // 强制持久化
   }
 }
 
@@ -151,7 +165,7 @@ void Persistence::LoadLastSnapshotId(const std::string &folder_path) {  // 添�
   std::string file_path = folder_path + ".MaxLogID";
   std::ifstream file("file_path");
   if (file.is_open()) {
-    file >> last_snapshot_id_;                                   
+    file >> last_snapshot_id_;
     file.close();
   } else {
     global_logger->warn("Failed to open file snapshots_MaxID for reading");

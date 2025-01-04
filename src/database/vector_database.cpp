@@ -56,6 +56,13 @@ void VectorDatabase::WriteWalLog(const std::string& operation_type, const rapidj
     std::string version = "1.0"; // 您可以根据需要设置版本
     persistence_.WriteWalLog(operation_type, json_data, version); // 将 version 传递给 writeWALLog 方法
 }
+
+void VectorDatabase::writeWALLogWithID(uint64_t log_id, const std::string& data) {
+    std::string operation_type = "upsert"; // 默认 operation_type 为 upsert
+    std::string version = "1.0"; // 您可以根据需要设置版本
+    persistence_.writeWALRawLog(log_id, operation_type, data, version); // 调用 persistence_ 的 writeWALRawLog 方法
+}
+
 auto VectorDatabase::GetIndexTypeFromRequest(const rapidjson::Document& json_request) -> IndexFactory::IndexType {
     // 获取请求参数中的索引类型
     if (json_request.HasMember(REQUEST_INDEX_TYPE) && json_request[REQUEST_INDEX_TYPE].IsString()) {
