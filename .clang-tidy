@@ -48,7 +48,9 @@ Checks:     '
             -readability-qualified-auto,
             -readability-redundant-access-specifiers,
             -bugprone-exception-escape,
-            -Wambiguous-reversed-operator
+            -Wambiguous-reversed-operator,
+            -google-default-arguments,
+            -field_incomplete_or_sizeless
             '
 CheckOptions:
   - { key: readability-identifier-naming.ClassCase,           value: CamelCase  }

@@ -217,4 +217,8 @@ void VectorDatabase::TakeSnapshot() { // 添加 takeSnapshot 方法实现
     persistence_.TakeSnapshot();
 }
 
+auto VectorDatabase::GetStartIndexId() const -> int64_t {
+    return persistence_.GetId(); // 通过调用 persistence_ 的 GetID 方法获取起始索引 ID
+}
+
 }  // namespace vectordb

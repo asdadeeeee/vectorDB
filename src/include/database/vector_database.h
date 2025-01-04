@@ -21,6 +21,7 @@ public:
     void WriteWalLog(const std::string& operation_type, const rapidjson::Document& json_data); // 添加 writeWALLog 方法声明
     auto GetIndexTypeFromRequest(const rapidjson::Document& json_request) -> vectordb::IndexFactory::IndexType; 
     void TakeSnapshot();
+    auto GetStartIndexId() const -> int64_t; // 添加 getStartIndexID 函数声明
 private:
     ScalarStorage scalar_storage_;
     Persistence persistence_; // 添加 Persistence 对象

@@ -309,13 +309,12 @@ function build_protobuf() {
 }
 
 function parse_proto(){
-PROTO_FOLDER=${TP_DIR}/proto
-
-rm -rf ${PROTO_FOLDER}/*.pb.h
-rm -rf ${PROTO_FOLDER}/*.pb.cc
-chmod +x ${TP_INSTALL_DIR}/bin/protoc
-${TP_INSTALL_DIR}/bin/protoc --cpp_out=$PROTO_FOLDER -I $PROTO_FOLDER $PROTO_FOLDER/*.proto
-echo "rebuild proto finished"
+    PROTO_FOLDER=${TP_DIR}/proto
+    rm -rf ${PROTO_FOLDER}/*.pb.h
+    rm -rf ${PROTO_FOLDER}/*.pb.cc
+    chmod +x ${TP_INSTALL_DIR}/bin/protoc
+    ${TP_INSTALL_DIR}/bin/protoc --cpp_out=$PROTO_FOLDER -I $PROTO_FOLDER $PROTO_FOLDER/*.proto
+    echo "rebuild proto finished"
 }
 
 function build_leveldb() {
@@ -472,6 +471,23 @@ function build_roaringbitmap() {
     make -C build -j ${PARALLEL} install
 }
 
+
+function build_nuraft() {
+    local URL="https://gh.llkk.cc/https://github.com/eBay/NuRaft/archive/refs/tags/v2.1.0.tar.gz"
+    local FILE=v2.1.0.tar.gz
+    local DIR=NuRaft-2.1.0
+    local MD5SUM="46a3da6e038e9347cb33f714ac52c541"
+    [ -f ${TP_SOURCE_DIR}/${FILE} ] || wget $URL -O ${TP_SOURCE_DIR}/${FILE}
+    check_md5 ${TP_SOURCE_DIR}/${FILE} $MD5SUM
+    [ -d ${TP_SOURCE_DIR}/${DIR} ] || tar xvf ${TP_SOURCE_DIR}/${FILE} -C ${TP_SOURCE_DIR}
+    cd ${TP_SOURCE_DIR}/${DIR}
+    rm -rf asio
+    git clone https://gh.llkk.cc/https://github.com/chriskohlhoff/asio -b asio-1-24-0
+    cmake -B build .  -DCMAKE_INSTALL_PREFIX="${TP_INSTALL_DIR}" \
+    make -C build -j ${PARALLEL} install
+    cp src/event_awaiter.h ${TP_INCLUDE_DIR}/libnuraft
+}
+
 PACKAGES=(
     "faiss"
     "hnswlib"
@@ -492,6 +508,7 @@ PACKAGES=(
     "roaringbitmap"
     "gtest"
     "backward"
+    "nuraft"
 )
 
 function build() {

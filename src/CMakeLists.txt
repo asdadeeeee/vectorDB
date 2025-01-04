@@ -5,6 +5,7 @@ add_subdirectory(logger)
 add_subdirectory(httpserver)
 add_subdirectory(database)
 add_subdirectory(common)
+add_subdirectory(cluster)
 add_library(vectorDB STATIC ${ALL_OBJECT_FILES})
 
 set(VECTORDB_LIBS
@@ -13,6 +14,7 @@ set(VECTORDB_LIBS
         vectorDB_httpserver
         vectorDB_database
         vectorDB_common
+        vectorDB_cluster
         )
 
 

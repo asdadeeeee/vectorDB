@@ -8,6 +8,12 @@ a vector database implementation based on 《从零构建向量数据库》
 使用http请求对数据库发起访问，插入或查询vector
 
 ## How to build
+### 安装通用依赖库
+
+Ubuntu:
+``` shell
+sudo apt-get install cmake openssl libssl-dev libz-dev gfortran
+```
 
 ### Prepare environment variables
 

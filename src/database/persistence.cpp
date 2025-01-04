@@ -37,6 +37,7 @@ void Persistence::Init(const std::string &local_path) {
   LoadLastSnapshotId(Cfg::Instance().SnapPath());
 }
 
+
 auto Persistence::IncreaseId() -> uint64_t {
   increase_id_++;
   return increase_id_;
@@ -150,7 +151,7 @@ void Persistence::LoadLastSnapshotId(const std::string &folder_path) {  // æ·»åŠ
   std::string file_path = folder_path + ".MaxLogID";
   std::ifstream file("file_path");
   if (file.is_open()) {
-    file >> last_snapshot_id_;
+    file >> last_snapshot_id_;                                   
     file.close();
   } else {
     global_logger->warn("Failed to open file snapshots_MaxID for reading");

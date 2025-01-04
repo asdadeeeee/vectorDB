@@ -18,6 +18,7 @@ set(LIB_LIST
     lz4
     bz2
     roaring
+    nuraft
 )
 
 foreach(lib_name IN LISTS LIB_LIST)
