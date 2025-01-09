@@ -2,5 +2,5 @@
 #include "common/vector_utils.h"
 
 namespace vectordb {
-    void Init();
+    void Init(int node_id);
 }

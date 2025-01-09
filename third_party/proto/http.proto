@@ -17,5 +17,9 @@ rpc query(HttpRequest) returns (HttpResponse);
 
 service AdminService {
 rpc snapshot(HttpRequest) returns (HttpResponse);
+rpc SetLeader(HttpRequest) returns (HttpResponse);
+rpc AddFollower(HttpRequest) returns (HttpResponse);
+rpc ListNode(HttpRequest) returns (HttpResponse);
+rpc GetNode(HttpRequest) returns (HttpResponse);
 };
 

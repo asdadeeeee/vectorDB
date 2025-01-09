@@ -344,7 +344,6 @@ public:
     };
 
     struct RawStackInfo {
-        RawStackInfo();
         uint32_t tid_hash_{0};
         uint64_t kernel_tid_{0};
         std::vector<void*> stack_ptrs_;

@@ -3,9 +3,9 @@
 #include "logger/logger.h"
 #include "database/persistence.h"
 namespace vectordb {
-void Init() {
+void Init(int node_id) {
   auto cfg_path = GetCfgPath();
-  Cfg::CfgPath(cfg_path);
+  Cfg::SetCfg(cfg_path,node_id);
   InitGlobalLogger();
   SetLogLevel(Cfg::Instance().GlogLevel());
   auto &indexfactory = IndexFactory::Instance();

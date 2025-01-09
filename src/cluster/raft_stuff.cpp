@@ -4,7 +4,7 @@
 namespace vectordb {
 RaftStuff::RaftStuff(int node_id, std::string &endpoint, int port, VectorDatabase *vector_database)
     : node_id_(node_id),
-      endpoint_(std::move(endpoint)),
+      endpoint_(endpoint),
       port_(port),
       vector_database_(vector_database) {  // 初始化 vector_database_ 指针
   Init();
@@ -41,6 +41,11 @@ auto RaftStuff::AddSrv(int srv_id, const std::string &srv_endpoint)
   nuraft::ptr<nuraft::srv_config> peer_srv_conf = nuraft::cs_new<nuraft::srv_config>(srv_id, srv_endpoint);
   global_logger->debug("Adding server with srv_id: {}, srv_endpoint: {}", srv_id, srv_endpoint);  // 添加打印日志
   return raft_instance_->add_srv(*peer_srv_conf);
+}
+
+auto RaftStuff::GetSrvConfig(int srv_id) -> nuraft::ptr<nuraft::srv_config> {
+  global_logger->debug("get server config with srv_id: {}", srv_id);  // 添加打印日志
+  return raft_instance_->get_srv_config(srv_id);
 }
 
 auto RaftStuff::AppendEntries(const std::string &entry)

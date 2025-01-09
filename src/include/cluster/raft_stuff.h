@@ -18,6 +18,7 @@ class RaftStuff {
   auto GetCurrentNodesInfo() const -> std::tuple<int, std::string, std::string, nuraft::ulong, nuraft::ulong>;
   auto GetNodeStatus(int node_id) const -> std::string;  // 添加 getNodeStatus 方法声明
   auto AppendEntries(const std::string &entry) -> nuraft::ptr<nuraft::cmd_result<nuraft::ptr<nuraft::buffer>>>;
+  auto GetSrvConfig(int srv_id) -> nuraft::ptr<nuraft::srv_config>;
 
  private:
   int node_id_;
