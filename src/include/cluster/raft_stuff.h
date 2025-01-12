@@ -10,8 +10,7 @@ class RaftStuff {
   RaftStuff(int node_id, std::string &endpoint, int port, VectorDatabase *vector_database);
 
   void Init();
-  auto AddSrv(int srv_id, const std::string &srv_endpoint)
-      -> nuraft::ptr<nuraft::cmd_result<nuraft::ptr<nuraft::buffer>>>;
+  auto AddSrv(int srv_id, const std::string &srv_endpoint) -> bool;
   void EnableElectionTimeout(int lower_bound, int upper_bound);  // 定义 enableElectionTimeout 方法
   auto IsLeader() const -> bool;                                 // 添加 isLeader 方法声明
   auto GetAllNodesInfo() const -> std::vector<std::tuple<int, std::string, std::string, nuraft::ulong, nuraft::ulong>>;

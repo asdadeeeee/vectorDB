@@ -82,29 +82,8 @@ void AdminServiceImpl::AddFollower(::google::protobuf::RpcController *controller
   std::string endpoint = json_request["endpoint"].GetString();
 
   // 调用 RaftStuff 的 addSrv 方法将新的follower节点添加到集群中
-  auto ret = raft_stuff_->AddSrv(node_id, endpoint);
-  if (!ret->get_accepted()) {
-    global_logger->error("raft_stuff  AddSrv  failed");
-    cntl->http_response().set_status_code(400);
-    SetErrorJsonResponse(cntl, RESPONSE_RETCODE_ERROR, "raft_stuff  AddSrv  failed");
-    done->Run();
-    return;
-  }
-
-  // Wait until it appears in server list.
-  bool success = false;
-  const size_t max_try = 40;
-  for (size_t jj = 0; jj < max_try; ++jj) {
-    global_logger->info("Wait for add follower.");
-    std::this_thread::sleep_for(std::chrono::milliseconds(250));
-    auto conf = raft_stuff_->GetSrvConfig(node_id);
-    if (conf) {
-      success = true;
-      global_logger->info(" Add follower done.");
-      break;
-    }
-  }
-
+  bool success = raft_stuff_->AddSrv(node_id, endpoint);
+ 
   if (!success) {
     global_logger->error("raft_stuff  AddSrv  failed");
     cntl->http_response().set_status_code(400);
