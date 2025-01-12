@@ -15,7 +15,7 @@ namespace vectordb {
   auto HttpServer::Init(VectorDatabase *vector_database,RaftStuff *raft_stuff) -> bool{
     vector_database_ = vector_database;
     raft_stuff_ = raft_stuff;
-    user_service_impl_ = std::make_unique<UserServiceImpl>(vector_database_);
+    user_service_impl_ = std::make_unique<UserServiceImpl>(vector_database_,raft_stuff);
     admin_service_impl_ = std::make_unique<AdminServiceImpl>(vector_database_,raft_stuff);
     if (AddService(user_service_impl_.get(), brpc::SERVER_DOESNT_OWN_SERVICE) != 0) {
          global_logger->error("Failed to add http_service_impl");

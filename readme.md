@@ -96,8 +96,8 @@ to rebuild .pb.h and .pb.cc
 Switch to the project directory:
 
 ```shell
-cd bin
-./vdb_server
+cd build
+./bin/vdb_server
 ```
 
 ### Operation
@@ -115,6 +115,44 @@ $ cmake ..
 $ make faiss_index_test
 $ cd test
 $ .faiss_index_test
+```
+
+
+### Build Cluster
+
+Switch to the project directory:
+
+```shell
+cd build
+./bin/vdb_server 1
+```
+
+在另一终端中
+```shell
+cd build
+./bin/vdb_server 2
+```
+1，2为nodeID
+只要在vectordb_config中配置好node信息,即可在终端中执行```./vdb_server $nodeid```
+
+选取其中一个作为主节点，将其他节点作为从节点加入集群:
+```shell
+curl -X POST -H "Content-Type: application/json" -d '{"nodeId": 2, "endpoint": "127.0.0.1:8082"}' http://localhost:7781/AdminService/AddFollower
+```
+想让哪个节点作为主节点，就向该节点port发出请求，-d后为待加入的从节点信息，一次加入一个，加入完毕后通过List来查看是否已加入集群:
+```shell
+curl -X GET http://localhost:7781/AdminService/ListNode
+```
+此外可以通过GetNode来查看当前节点状态
+```shell
+curl -X GET http://localhost:7781/AdminService/GetNode
+```
+
+向主节点中发起upsert请求，从节点中进行search，也可查到数据;
+```shell
+curl -X POST -H "Content-Type: application/json" -d '{"vectors": [0.999], "id":6, "int_field":47,"indexType": "FLAT"}'  http://localhost:7781/UserService/upsert
+
+curl -X POST -H "Content-Type: application/json" -d '{"vectors": [0.999], "k": 5 , "indexType": "FLAT","filter":{"fieldName":"int_field","value":47,"op":"="}}'  http://localhost:7782/UserService/search
 ```
 
 ## Reference
@@ -182,6 +220,8 @@ vectorDB is licensed under the MIT License. For more details, please refer to th
 ### 添加单例抽象类
 添加单例模板类，将IndexFactory改造为真正的单例模式
 
+### 压缩WAL日志文件
+采用snappy压缩算法，对WAL进行压缩及解压缩，减少WAL文件所占空间
 
 
 

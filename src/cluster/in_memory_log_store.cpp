@@ -90,7 +90,7 @@ auto InmemLogStore::append(nuraft::ptr<nuraft::log_entry> &entry) -> nuraft::ulo
     global_logger->debug("Append app logs {}, content: {}, value type {}", idx, content,
                          "nuraft::log_val_type::app_log");  //  添加打印日志
 
-    vector_database_->writeWALLogWithID(idx, content);
+    vector_database_->WriteWalLogWithId(idx, content);
   } else {
     nuraft::buffer &data = clone->get_buf();
     std::string content(reinterpret_cast<const char *>(data.data() + data.pos()), data.size());

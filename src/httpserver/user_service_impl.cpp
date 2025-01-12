@@ -203,13 +203,17 @@ void UserServiceImpl::upsert(::google::protobuf::RpcController *controller, cons
     return;
   }
 
-  uint64_t label = json_request[REQUEST_ID].GetUint64();
+  // uint64_t label = json_request[REQUEST_ID].GetUint64();
 
-  // 获取请求参数中的索引类型
-  IndexFactory::IndexType index_type = GetIndexTypeFromRequest(json_request);
-  vector_database_->Upsert(label, json_request, index_type);
-  // 在 upsert 调用之后调用 VectorDatabase::writeWALLog
-  vector_database_->WriteWalLog("upsert", json_request);
+  // // 获取请求参数中的索引类型
+  // IndexFactory::IndexType index_type = GetIndexTypeFromRequest(json_request);
+
+   // 调用 RaftStuff 的 appendEntries 方法将新的日志条目添加到集群中
+  raft_stuff_->AppendEntries(cntl->request_attachment().to_string());
+
+  // vector_database_->Upsert(label, json_request, index_type);
+  // // 在 upsert 调用之后调用 VectorDatabase::writeWALLog
+  // vector_database_->WriteWalLog("upsert", json_request);
 
   rapidjson::Document json_response;
   json_response.SetObject();

@@ -3,6 +3,7 @@
 #include "logger/logger.h"
 
 namespace vectordb {
+
 RaftStuff::RaftStuff(int node_id, std::string &endpoint, int port, VectorDatabase *vector_database)
     : node_id_(node_id),
       endpoint_(endpoint),
@@ -46,10 +47,10 @@ void RaftStuff::Init() {
   // Snapshot will be created for every 5 log appends.
   params.snapshot_distance_ = 5;
   // Client timeout: 3000 ms.
-  params.client_req_timeout_ = 3000;
+  params.client_req_timeout_ = 10000;
   // According to this method, `append_log` function
   // should be handled differently.
-  params.return_method_ = nuraft::raft_params::blocking;
+  params.return_method_ = CALL_TYPE;
 
   // Logger.
   std::string log_file_name = "./srv" + std::to_string(node_id_) + ".log";
@@ -113,8 +114,7 @@ auto RaftStuff::GetSrvConfig(int srv_id) -> nuraft::ptr<nuraft::srv_config> {
   return raft_instance_->get_srv_config(srv_id);
 }
 
-auto RaftStuff::AppendEntries(const std::string &entry)
-    -> nuraft::ptr<nuraft::cmd_result<nuraft::ptr<nuraft::buffer>>> {
+void RaftStuff::AppendEntries(const std::string &entry) {
   if (!raft_instance_ || !raft_instance_->is_leader()) {
     // 添加调试日志
     if (!raft_instance_) {
@@ -122,7 +122,7 @@ auto RaftStuff::AppendEntries(const std::string &entry)
     } else {
       global_logger->debug("Cannot append entries: Current node is not the leader");
     }
-    return nullptr;
+    return;
   }
 
   // 计算所需的内存大小
@@ -144,7 +144,30 @@ auto RaftStuff::AppendEntries(const std::string &entry)
   global_logger->debug("Appending entry to Raft instance");
 
   // 将日志条目追加到 Raft 实例中
-  return raft_instance_->append_entries({log_entry_buffer});
+  auto ret = raft_instance_->append_entries({log_entry_buffer});
+
+  if (!ret->get_accepted()) {
+    // Log append rejected, usually because this node is not a leader.
+    global_logger->debug("Failed append log {}", static_cast<int>(ret->get_result_code()));
+  }
+  // Log append accepted, but that doesn't mean the log is committed.
+  // Commit result can be obtained below.
+
+  if (CALL_TYPE == nuraft::raft_params::blocking) {
+    // Blocking mode:
+    //   `append_entries` returns after getting a consensus,
+    //   so that `ret` already has the result from state machine.
+    HandleResult(*ret);
+
+  } else if (CALL_TYPE == nuraft::raft_params::async_handler) {
+    // Async mode:
+    //   `append_entries` returns immediately.
+    //   `handle_result` will be invoked asynchronously,
+    //   after getting a consensus.
+    ret->when_ready(std::bind(&RaftStuff::HandleResult, this, std::placeholders::_1));
+  } else {
+    assert(0);
+  }
 }
 
 void RaftStuff::EnableElectionTimeout(int lower_bound, int upper_bound) {
@@ -245,4 +268,16 @@ auto RaftStuff::GetCurrentNodesInfo() const -> std::tuple<int, std::string, std:
 
   return nodes_info;
 }
+
+void RaftStuff::HandleResult(nuraft::cmd_result<nuraft::ptr<nuraft::buffer>> &result) {
+  if (result.get_result_code() != nuraft::cmd_result_code::OK) {
+    // Something went wrong.
+    // This means committing this log failed,
+    // but the log itself is still in the log store.
+    global_logger->error("failed: {}", static_cast<int>(result.get_result_code()));
+    return;
+  }
+  global_logger->info("succeed");
+}
+
 }  // namespace vectordb

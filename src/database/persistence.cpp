@@ -11,7 +11,7 @@
 #include "logger/logger.h"
 namespace vectordb {
 
-Persistence::Persistence() : increase_id_(1) {}
+Persistence::Persistence() : increase_id_(10), last_snapshot_id_(0) {}
 
 Persistence::~Persistence() {
   if (wal_log_file_.is_open()) {
@@ -74,10 +74,18 @@ void Persistence::WriteWalLog(const std::string &operation_type, const rapidjson
   }
 }
 
-void Persistence::writeWALRawLog(uint64_t log_id, const std::string &operation_type, const std::string &raw_data,
+void Persistence::WriteWalRawLog(uint64_t log_id, const std::string &operation_type, const std::string &raw_data,
                                  const std::string &version) {
-  wal_log_file_ << log_id << "|" << version << "|" << operation_type << "|" << raw_data
-                << std::endl;  // 将 version 添加到日志格式中
+  // 拼接日志条目
+  std::ostringstream oss;
+  oss << log_id << "|" << version << "|" << operation_type << "|" << raw_data;
+
+  // 压缩日志条目
+  std::string compressed_data;
+  snappy::Compress(oss.str().c_str(), oss.str().size(), &compressed_data);
+
+  // 写入压缩后的日志条目到文件
+  wal_log_file_ << compressed_data << std::endl;
 
   if (wal_log_file_.fail()) {  // 检查是否发生错误
     global_logger->error("An error occurred while writing the WAL raw log entry. Reason: {}",

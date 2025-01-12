@@ -19,7 +19,7 @@ public:
     auto Search(const rapidjson::Document& json_request) -> std::pair<std::vector<int64_t>, std::vector<float>>;
     void ReloadDatabase(); // 添加 reloadDatabase 方法声明
     void WriteWalLog(const std::string& operation_type, const rapidjson::Document& json_data); // 添加 writeWALLog 方法声明
-    void writeWALLogWithID(uint64_t log_id, const std::string& data);
+    void WriteWalLogWithId(uint64_t log_id, const std::string& data);
     auto GetIndexTypeFromRequest(const rapidjson::Document& json_request) -> vectordb::IndexFactory::IndexType; 
     void TakeSnapshot();
     auto GetStartIndexId() const -> int64_t; // 添加 getStartIndexID 函数声明

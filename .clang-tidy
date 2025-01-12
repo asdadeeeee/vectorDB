@@ -50,6 +50,7 @@ Checks:     '
             -bugprone-exception-escape,
             -Wambiguous-reversed-operator,
             -google-default-arguments,
+            -modernize-avoid-bind,
             '
 CheckOptions:
   - { key: readability-identifier-naming.ClassCase,           value: CamelCase  }

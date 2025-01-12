@@ -5,6 +5,10 @@
 #include "log_state_machine.h"
 #include "logger/logger.h"  // 包含 logger.h 以使用日志记录器
 namespace vectordb {
+
+static const nuraft::raft_params::return_method_type CALL_TYPE
+    = nuraft::raft_params::blocking;
+//  = nuraft::raft_params::async_handler;
 class RaftStuff {
  public:
   RaftStuff(int node_id, std::string &endpoint, int port, VectorDatabase *vector_database);
@@ -16,9 +20,11 @@ class RaftStuff {
   auto GetAllNodesInfo() const -> std::vector<std::tuple<int, std::string, std::string, nuraft::ulong, nuraft::ulong>>;
   auto GetCurrentNodesInfo() const -> std::tuple<int, std::string, std::string, nuraft::ulong, nuraft::ulong>;
   auto GetNodeStatus(int node_id) const -> std::string;  // 添加 getNodeStatus 方法声明
-  auto AppendEntries(const std::string &entry) -> nuraft::ptr<nuraft::cmd_result<nuraft::ptr<nuraft::buffer>>>;
+  void AppendEntries(const std::string &entry);
   auto GetSrvConfig(int srv_id) -> nuraft::ptr<nuraft::srv_config>;
-
+  void HandleResult(nuraft::cmd_result< nuraft::ptr<nuraft::buffer> >& result);
+ private:
+ 
  private:
   int node_id_;
   std::string endpoint_;
