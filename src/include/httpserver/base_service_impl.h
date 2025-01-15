@@ -16,7 +16,8 @@ class BaseServiceImpl {
  public:
   enum class CheckType { SEARCH, INSERT, UPSERT };
   void SetJsonResponse(const rapidjson::Document &json_response, brpc::Controller *cntl);
-
+  void SetTextResponse(const std::string &response, brpc::Controller *cntl);
+  void SetJsonResponse(const std::string &response, brpc::Controller *cntl);
   void SetErrorJsonResponse(brpc::Controller *cntl, int error_code, const std::string &errorMsg);
 
   auto IsRequestValid(const rapidjson::Document &json_request, CheckType check_type) -> bool;

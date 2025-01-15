@@ -1,4 +1,5 @@
 #include "httpserver/base_service_impl.h"
+#include <string>
 
 namespace vectordb {
 void BaseServiceImpl::SetJsonResponse(const rapidjson::Document &json_response, brpc::Controller *cntl) {
@@ -7,6 +8,16 @@ void BaseServiceImpl::SetJsonResponse(const rapidjson::Document &json_response, 
   json_response.Accept(writer);
   cntl->response_attachment().append(buffer.GetString());
   cntl->http_response().set_content_type(RESPONSE_CONTENT_TYPE_JSON);
+}
+
+void BaseServiceImpl::SetTextResponse(const std::string &response, brpc::Controller *cntl) {
+  cntl->response_attachment().append(response);
+  cntl->http_response().set_content_type(RESPONSE_CONTENT_TYPE_TEXT);
+}
+
+void BaseServiceImpl::SetJsonResponse(const std::string &response, brpc::Controller *cntl) {
+  cntl->response_attachment().append(response);
+  cntl->http_response().set_content_type(RESPONSE_CONTENT_TYPE_TEXT);
 }
 
 void BaseServiceImpl::SetErrorJsonResponse(brpc::Controller *cntl, int error_code, const std::string &errorMsg) {

@@ -19,6 +19,7 @@ set(LIB_LIST
     bz2
     roaring
     nuraft
+    curl
 )
 
 foreach(lib_name IN LISTS LIB_LIST)
