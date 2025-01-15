@@ -17,6 +17,7 @@ namespace vectordb {
 #define RESPONSE_ERROR_MSG "errorMsg" // 添加宏定义
 
 #define RESPONSE_CONTENT_TYPE_JSON "application/json"
+#define RESPONSE_CONTENT_TYPE_TEXT "text/plain"
 
 #define INDEX_TYPE_FLAT "FLAT" // 添加宏定义
 #define INDEX_TYPE_HNSW "HNSW" // 添加宏定义

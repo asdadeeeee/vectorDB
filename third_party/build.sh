@@ -489,6 +489,22 @@ function build_nuraft() {
     cp examples/backtrace.h ${TP_INCLUDE_DIR}/libnuraft
 }
 
+function build_curl() {
+    local URL=" https://gh.llkk.cc/https://github.com/curl/curl/releases/download/curl-8_11_1/curl-8.11.1.tar.gz"
+    local FILE=curl-8.11.1.tar.gz
+    local DIR=curl-8.11.1
+    local MD5SUM="8eed752aeeb8ee54063b75baf95d3e14"
+
+    [ -f ${TP_SOURCE_DIR}/${FILE} ] || wget $URL -O ${TP_SOURCE_DIR}/${FILE}
+    check_md5 ${TP_SOURCE_DIR}/${FILE} $MD5SUM
+    [ -d ${TP_SOURCE_DIR}/${DIR} ] || tar xvf ${TP_SOURCE_DIR}/${FILE} -C ${TP_SOURCE_DIR}
+
+    cd ${TP_SOURCE_DIR}/${DIR}
+    cmake -B build .  -DCMAKE_INSTALL_PREFIX="${TP_INSTALL_DIR}" 
+    make -C build -j ${PARALLEL} install
+}
+
+
 PACKAGES=(
     "faiss"
     "hnswlib"
@@ -510,6 +526,7 @@ PACKAGES=(
     "gtest"
     "backward"
     "nuraft"
+    "curl"
 )
 
 function build() {
