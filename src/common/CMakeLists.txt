@@ -2,6 +2,7 @@ add_library(
         vectorDB_common
         OBJECT
         vector_cfg.cpp
+        proxy_cfg.cpp
         vector_init.cpp
         )
 

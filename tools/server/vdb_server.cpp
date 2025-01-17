@@ -14,7 +14,7 @@ auto main(int argc, char *argv[]) -> int {
   } else {
     std::cout << "No number provided, using default value: " << node_id << std::endl;
   }
-  vectordb::Init(node_id);
+  vectordb::VdbServerInit(node_id);
   vectordb::global_logger->info("Global IndexFactory initialized");
 
   // 创建并启动HTTP服务器

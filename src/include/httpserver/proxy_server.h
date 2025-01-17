@@ -16,8 +16,8 @@ class ProxyServer : public brpc::Server {
   ~ProxyServer();
   // void start(int port);
 
-  auto Init(std::string &masterServerHost, int masterServerPort, const int &instanceId,
-            std::set<std::string> &read_path, std::set<std::string> &write_paths) -> bool;
+  auto Init(const std::string &masterServerHost, int masterServerPort,  int instanceId,
+            const std::set<std::string> &read_path, const std::set<std::string> &write_paths) -> bool;
 
  private:
   void InitCurl();

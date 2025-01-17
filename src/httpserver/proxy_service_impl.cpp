@@ -136,6 +136,7 @@ void ProxyServiceImpl::FetchAndUpdateNodes() {
   global_logger->info("Fetching nodes from Master Server");
 
   // 构建请求 URL
+  // TODO(zhouzj): 改为请求体
   std::string url = "http://" + master_server_host_ + ":" + std::to_string(master_server_port_) +
                     "/getInstance?instanceId=" +  std::to_string(instance_id_);
   global_logger->debug("Requesting URL: {}", url);

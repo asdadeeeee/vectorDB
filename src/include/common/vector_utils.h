@@ -34,9 +34,9 @@ constexpr auto CompileValue(T value __attribute__((unused)), T debugValue __attr
 #endif
 }
 
-inline auto GetCfgPath() -> std::string {
+inline auto GetCfgPath(const std::string &config_name) -> std::string {
   const char *code_base = std::getenv("VECTORDB_CODE_BASE");
-  std::string cfg_name = "vectordb_config";
+  const std::string& cfg_name = config_name;
   char *config_path = static_cast<char *>(malloc(strlen(code_base) + cfg_name.length() + 2));
   memset(config_path, 0, strlen(code_base) + cfg_name.length() + 2);
   strcat(config_path, code_base);
@@ -45,5 +45,6 @@ inline auto GetCfgPath() -> std::string {
   std::string path_str(config_path);
   return path_str;
 }
+
 
 }  // namespace vectordb
