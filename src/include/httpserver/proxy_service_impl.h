@@ -20,13 +20,13 @@ struct NodeInfo {
 };
 class ProxyServiceImpl : public nvm::ProxyService, public BaseServiceImpl {
  public:
-  explicit ProxyServiceImpl(std::set<std::string> &read_path, std::set<std::string> &write_paths,
-                            std::string &masterServerHost, int masterServerPort, const int &instanceId,CURL *curl_handle)
+  explicit ProxyServiceImpl(std::set<std::string> read_path, std::set<std::string> write_paths,
+                            std::string masterServerHost, int masterServerPort, const int &instanceId,CURL *curl_handle)
       : instance_id_(instanceId),
-        master_server_host_(masterServerHost),
+        master_server_host_(std::move(masterServerHost)),
         master_server_port_(masterServerPort),
-        read_paths_(read_path),
-        write_paths_(write_paths),
+        read_paths_(std::move(read_path)),
+        write_paths_(std::move(write_paths)),
         curl_handle_(curl_handle){};
 
   ~ProxyServiceImpl() override = default;

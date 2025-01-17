@@ -7,9 +7,9 @@
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/writer.h"
 namespace vectordb {
-  
-auto ProxyServer::Init(std::string &masterServerHost, int masterServerPort, const int &instanceId,
-                       std::set<std::string> &read_path, std::set<std::string> &write_paths) -> bool {
+
+auto ProxyServer::Init(const std::string &masterServerHost, int masterServerPort, int instanceId,
+                       const std::set<std::string> &read_path, const std::set<std::string> &write_paths) -> bool {
   master_server_host_ = masterServerHost;
   master_server_port_ = masterServerPort;
   instance_id_ = instanceId;
@@ -18,12 +18,18 @@ auto ProxyServer::Init(std::string &masterServerHost, int masterServerPort, cons
   InitCurl();
   proxy_service_impl_ = std::make_unique<ProxyServiceImpl>(read_path, write_paths, masterServerHost, masterServerPort,
                                                            instanceId, curl_handle_);
+  if (masterServerHost.empty()) {
+    global_logger->info("zhouzj print test ProxyServer::Init() after ProxyServiceImpl, masterServerHost empty");
+  } else {
+    global_logger->info("zhouzj print test ProxyServer::Init() after ProxyServiceImpl, masterServerHost  not empty");
+  }
   if (AddService(proxy_service_impl_.get(), brpc::SERVER_DOESNT_OWN_SERVICE) != 0) {
     global_logger->error("Failed to add http_service_impl");
     return false;
   }
-  global_logger->info("ProxyServer init success");
   StartNodeUpdateTimer();  // 启动节点更新定时器
+  FetchAndUpdateNodes();
+  global_logger->info("ProxyServer init success");
   return true;
 }
 
