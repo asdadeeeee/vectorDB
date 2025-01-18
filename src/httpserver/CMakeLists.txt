@@ -3,6 +3,7 @@ add_library(
         OBJECT
         http_server.cpp
         proxy_server.cpp
+        master_server.cpp
         proxy_service_impl.cpp
         user_service_impl.cpp
         admin_service_impl.cpp

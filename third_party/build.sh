@@ -505,6 +505,22 @@ function build_curl() {
 }
 
 
+function build_etcdclient() {
+    local URL=" https://gh.llkk.cc/https://github.com/etcd-cpp-apiv3/etcd-cpp-apiv3/archive/refs/tags/v0.15.4.tar.gz"
+    local FILE=v0.15.4.tar.gz
+    local DIR=etcd-cpp-apiv3-0.15.4
+    local MD5SUM="2f886420c47fc826234a4c5194863a8e"
+
+    [ -f ${TP_SOURCE_DIR}/${FILE} ] || wget $URL -O ${TP_SOURCE_DIR}/${FILE}
+    check_md5 ${TP_SOURCE_DIR}/${FILE} $MD5SUM
+    [ -d ${TP_SOURCE_DIR}/${DIR} ] || tar xvf ${TP_SOURCE_DIR}/${FILE} -C ${TP_SOURCE_DIR}
+
+    cd ${TP_SOURCE_DIR}/${DIR}
+    cmake -B build .  -DCMAKE_INSTALL_PREFIX="${TP_INSTALL_DIR}" 
+    make -C build -j ${PARALLEL} install
+}
+
+
 PACKAGES=(
     "faiss"
     "hnswlib"
@@ -527,6 +543,7 @@ PACKAGES=(
     "backward"
     "nuraft"
     "curl"
+    "etcdclient"
 )
 
 function build() {
