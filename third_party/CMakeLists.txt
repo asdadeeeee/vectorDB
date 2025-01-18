@@ -20,6 +20,7 @@ set(LIB_LIST
     roaring
     nuraft
     curl
+    etcd-cpp-api
 )
 
 foreach(lib_name IN LISTS LIB_LIST)
