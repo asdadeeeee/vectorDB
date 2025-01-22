@@ -9,6 +9,8 @@ namespace vectordb {
 #define REQUEST_K "k"
 #define REQUEST_ID "id"
 #define REQUEST_INDEX_TYPE "indexType"
+#define INSTANCE_ID "instanceId"
+#define NODE_ID "nodeId"
 
 #define RESPONSE_RETCODE "retCode" // 添加宏定义
 #define RESPONSE_RETCODE_SUCCESS 0

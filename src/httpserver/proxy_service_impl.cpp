@@ -131,19 +131,29 @@ void ProxyServiceImpl::ForwardRequest(brpc::Controller *cntl, ::google::protobuf
   }
 }
 
-
 void ProxyServiceImpl::FetchAndUpdateNodes() {
   global_logger->info("Fetching nodes from Master Server");
 
   // 构建请求 URL
-  // TODO(zhouzj): 改为请求体
-  std::string url = "http://" + master_server_host_ + ":" + std::to_string(master_server_port_) +
-                    "/getInstance?instanceId=" +  std::to_string(instance_id_);
-  global_logger->debug("Requesting URL: {}", url);
+  std::string url = "http://" + master_server_host_ + ":" + std::to_string(master_server_port_) + "/GetInstance";
+
+  // 创建 JSON 数据
+  std::string json_data = "{\"instanceId\": " + std::to_string(instance_id_) + "}";
 
   // 设置 CURL 选项
   curl_easy_setopt(curl_handle_, CURLOPT_URL, url.c_str());
-  curl_easy_setopt(curl_handle_, CURLOPT_HTTPGET, 1L);
+
+  // 设置为 POST 请求
+  curl_easy_setopt(curl_handle_, CURLOPT_POST, 1L);
+
+  // 设置请求头
+  struct curl_slist *headers = nullptr;
+  headers = curl_slist_append(headers, "Content-Type: application/json");
+  curl_easy_setopt(curl_handle_, CURLOPT_HTTPHEADER, headers);
+
+  // 设置 POST 数据
+  curl_easy_setopt(curl_handle_, CURLOPT_POSTFIELDS, json_data.c_str());
+
   std::string response_data;
   curl_easy_setopt(curl_handle_, CURLOPT_WRITEFUNCTION, ProxyServiceImpl::WriteCallback);
   curl_easy_setopt(curl_handle_, CURLOPT_WRITEDATA, &response_data);
@@ -183,7 +193,6 @@ void ProxyServiceImpl::FetchAndUpdateNodes() {
   active_nodes_index_.store(inactive_index);
   global_logger->info("Nodes updated successfully");
 }
-
 
 auto ProxyServiceImpl::WriteCallback(void *contents, size_t size, size_t nmemb, void *userp) -> size_t {
   (static_cast<std::string *>(userp))->append(static_cast<char *>(contents), size * nmemb);

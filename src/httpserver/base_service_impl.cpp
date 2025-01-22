@@ -43,6 +43,24 @@ auto BaseServiceImpl::IsRequestValid(const rapidjson::Document &json_request, Ch
   }
 }
 
+
+void BaseServiceImpl::SetResponse(brpc::Controller *cntl,int retCode, const std::string& msg, const rapidjson::Document* data) {
+    rapidjson::Document doc;
+    doc.SetObject();
+    rapidjson::Document::AllocatorType& allocator = doc.GetAllocator();
+
+    doc.AddMember("retCode", retCode, allocator);
+    doc.AddMember("msg", rapidjson::Value(msg.c_str(), allocator), allocator);
+
+    if (data != nullptr && data->IsObject()) {
+        rapidjson::Value data_value(rapidjson::kObjectType);
+        data_value.CopyFrom(*data, allocator); // 正确地复制 data
+        doc.AddMember("data", data_value, allocator);
+    }
+    SetJsonResponse(doc,cntl);
+}
+
+
 auto BaseServiceImpl::GetIndexTypeFromRequest(const rapidjson::Document &json_request)
     -> vectordb::IndexFactory::IndexType {
   // 获取请求参数中的索引类型

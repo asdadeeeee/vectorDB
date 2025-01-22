@@ -4,6 +4,7 @@ add_library(
         http_server.cpp
         proxy_server.cpp
         master_server.cpp
+        master_service_impl.cpp
         proxy_service_impl.cpp
         user_service_impl.cpp
         admin_service_impl.cpp

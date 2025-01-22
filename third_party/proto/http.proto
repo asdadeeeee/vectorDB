@@ -21,6 +21,13 @@ rpc search(HttpRequest) returns (HttpResponse);
 rpc topology(HttpRequest) returns (HttpResponse);
 };
 
+service MasterService {
+rpc GetNodeInfo(HttpRequest) returns (HttpResponse);
+rpc AddNode(HttpRequest) returns (HttpResponse);
+rpc RemoveNode(HttpRequest) returns (HttpResponse);
+rpc GetInstance(HttpRequest) returns (HttpResponse);
+};
+
 
 service AdminService {
 rpc snapshot(HttpRequest) returns (HttpResponse);

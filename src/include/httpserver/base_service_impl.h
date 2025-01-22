@@ -19,6 +19,8 @@ class BaseServiceImpl {
   void SetTextResponse(const std::string &response, brpc::Controller *cntl);
   void SetJsonResponse(const std::string &response, brpc::Controller *cntl);
   void SetErrorJsonResponse(brpc::Controller *cntl, int error_code, const std::string &errorMsg);
+  void SetResponse(brpc::Controller *cntl, int retCode, const std::string &msg,
+                   const rapidjson::Document *data = nullptr);
 
   auto IsRequestValid(const rapidjson::Document &json_request, CheckType check_type) -> bool;
 
