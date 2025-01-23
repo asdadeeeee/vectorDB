@@ -7,7 +7,7 @@
 namespace vectordb {
 // NOLINTNEXTLINE
 TEST(IndexTest, FaissSampleTest) {
-  Init();
+  VdbServerInit(1);
   auto &indexfactory = IndexFactory::Instance();
   auto index_type = IndexFactory::IndexType::FLAT;
   void *index = indexfactory.GetIndex(IndexFactory::IndexType::FLAT);

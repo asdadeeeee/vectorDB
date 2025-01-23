@@ -12,7 +12,7 @@ a vector database implementation based on 《从零构建向量数据库》
 
 Ubuntu:
 ``` shell
-sudo apt-get install cmake openssl libssl-dev libz-dev gfortran
+sudo apt-get install cmake openssl libssl-dev libz-dev libcpprest-dev gfortran 
 ```
 
 ### Prepare environment variables
