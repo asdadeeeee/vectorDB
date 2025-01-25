@@ -1,0 +1,10 @@
+{
+    "MASTER_HOST" : "0.0.0.0",
+    "MASTER_PORT" : 6060,
+    "ETCD_ENDPOINTS" : "http://127.0.0.1:2379",
+    
+    "LOG":{
+        "LOG_NAME" : "my_log",
+        "LOG_LEVEL" : 1
+    }
+}

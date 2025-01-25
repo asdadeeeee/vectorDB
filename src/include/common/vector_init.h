@@ -5,4 +5,5 @@
 namespace vectordb {
     void VdbServerInit(int node_id);
     void ProxyServerInit();
+    void MasterServerInit();
 }

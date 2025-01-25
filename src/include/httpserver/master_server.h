@@ -3,10 +3,9 @@
 #include <brpc/server.h>
 #include "httpserver/master_service_impl.h"
 namespace vectordb {
-
 class MasterServer : public brpc::Server  {
  public:
-  ~MasterServer();
+  ~MasterServer() = default;
   auto Init(const std::string &etcdEndpoints) -> bool;
 
  private:

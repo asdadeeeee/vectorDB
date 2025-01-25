@@ -12,10 +12,7 @@ namespace vectordb {
 
 class ProxyServer : public brpc::Server {
  public:
-  // ProxyServer(const std::string& masterServerHost, int masterServerPort, const std::string& instanceId);
   ~ProxyServer();
-  // void start(int port);
-
   auto Init(const std::string &masterServerHost, int masterServerPort,  int instanceId,
             const std::set<std::string> &read_path, const std::set<std::string> &write_paths) -> bool;
 

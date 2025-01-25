@@ -6,8 +6,8 @@
 # 定义源文件和目标名称的映射
 set(EXECUTABLES
     vdb_server:vdb_server.cpp
+    vdb_server_master:vdb_server_master.cpp
     vdb_server_proxy:vdb_server_proxy.cpp
-    # vdb_server_master:vdb_server_master.cpp
 )
 
 # 遍历每个目标，创建可执行文件并设置属性

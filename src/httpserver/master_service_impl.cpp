@@ -106,9 +106,9 @@ void MasterServiceImpl::AddNode(::google::protobuf::RpcController *controller, c
   }
 
   try {
-    std::string instance_id = json_request[INSTANCE_ID].GetString();
-    std::string node_id = json_request[NODE_ID].GetString();
-    std::string etcd_key = "/instances/" + instance_id + "/nodes/" + node_id;
+    uint64_t instance_id = json_request[INSTANCE_ID].GetUint64();
+    uint64_t node_id = json_request[NODE_ID].GetUint64();
+    std::string etcd_key = "/instances/" + std::to_string(instance_id) + "/nodes/" + std::to_string(node_id);
 
     rapidjson::StringBuffer buffer;
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
@@ -162,10 +162,11 @@ void MasterServiceImpl::RemoveNode(::google::protobuf::RpcController *controller
   }
 }
 
-void MasterServiceImpl:: GetInstance(::google::protobuf::RpcController *controller, const ::nvm::HttpRequest *
-/*request*/,
-                 ::nvm::HttpResponse * /*response*/, ::google::protobuf::Closure *done) {
-    global_logger->info("Received GetInstance request");
+void MasterServiceImpl::GetInstance(::google::protobuf::RpcController *controller,
+                                    const ::nvm::HttpRequest *
+                                    /*request*/,
+                                    ::nvm::HttpResponse * /*response*/, ::google::protobuf::Closure *done) {
+  global_logger->info("Received GetInstance request");
 
   brpc::ClosureGuard done_guard(done);
   auto *cntl = static_cast<brpc::Controller *>(controller);
@@ -183,50 +184,50 @@ void MasterServiceImpl:: GetInstance(::google::protobuf::RpcController *controll
 
   // 从JSON请求中获取ID
   uint64_t instance_id = json_request[INSTANCE_ID].GetUint64();
-    try {
-        std::string etcd_key_prefix = "/instances/" +  std::to_string(instance_id)+ "/nodes/";
-        global_logger->debug("etcd key prefix: {}", etcd_key_prefix);
+  try {
+    std::string etcd_key_prefix = "/instances/" + std::to_string(instance_id) + "/nodes/";
+    global_logger->debug("etcd key prefix: {}", etcd_key_prefix);
 
-        etcd::Response etcd_response = etcd_client_.ls(etcd_key_prefix).get();
-        global_logger->debug("etcd ls response received");
+    etcd::Response etcd_response = etcd_client_.ls(etcd_key_prefix).get();
+    global_logger->debug("etcd ls response received");
 
-        if (!etcd_response.is_ok()) {
-            global_logger->error("Error accessing etcd: {}", etcd_response.error_message());
-            SetResponse(cntl, 1, "Error accessing etcd: " + etcd_response.error_message());
-            return;
-        }
-
-        const auto& keys = etcd_response.keys();
-        const auto& values = etcd_response.values();
-
-        rapidjson::Document doc;
-        doc.SetObject();
-        rapidjson::Document::AllocatorType& allocator = doc.GetAllocator();
-
-        rapidjson::Value nodes_array(rapidjson::kArrayType);
-        for (size_t i = 0; i < keys.size(); ++i) {
-            global_logger->debug("Processing key: {}", keys[i]);
-            rapidjson::Document node_doc;
-            node_doc.Parse(values[i].as_string().c_str());
-            if (!node_doc.IsObject()) {
-                global_logger->warn("Invalid JSON format for key: {}", keys[i]);
-                continue;
-            }
-
-            // 使用 CopyFrom 方法将节点信息添加到数组中
-            rapidjson::Value node_value(node_doc, allocator);
-            nodes_array.PushBack(node_value, allocator);
-        }
-
-        doc.AddMember("instanceId", instance_id, allocator);
-        doc.AddMember("nodes", nodes_array, allocator);
-
-        global_logger->info("Instance info retrieved successfully for instanceId: {}", instance_id);
-        SetResponse(cntl, 0, "Instance info retrieved successfully", &doc);
-    } catch (const std::exception& e) {
-        global_logger->error("Exception accessing etcd: {}", e.what());
-        SetResponse(cntl, 1, "Exception accessing etcd: " + std::string(e.what()));
+    if (!etcd_response.is_ok()) {
+      global_logger->error("Error accessing etcd: {}", etcd_response.error_message());
+      SetResponse(cntl, 1, "Error accessing etcd: " + etcd_response.error_message());
+      return;
     }
+
+    const auto &keys = etcd_response.keys();
+    const auto &values = etcd_response.values();
+
+    rapidjson::Document doc;
+    doc.SetObject();
+    rapidjson::Document::AllocatorType &allocator = doc.GetAllocator();
+
+    rapidjson::Value nodes_array(rapidjson::kArrayType);
+    for (size_t i = 0; i < keys.size(); ++i) {
+      global_logger->debug("Processing key: {}", keys[i]);
+      rapidjson::Document node_doc;
+      node_doc.Parse(values[i].as_string().c_str());
+      if (!node_doc.IsObject()) {
+        global_logger->warn("Invalid JSON format for key: {}", keys[i]);
+        continue;
+      }
+
+      // 使用 CopyFrom 方法将节点信息添加到数组中
+      rapidjson::Value node_value(node_doc, allocator);
+      nodes_array.PushBack(node_value, allocator);
+    }
+
+    doc.AddMember("instanceId", instance_id, allocator);
+    doc.AddMember("nodes", nodes_array, allocator);
+
+    global_logger->info("Instance info retrieved successfully for instanceId: {}", instance_id);
+    SetResponse(cntl, 0, "Instance info retrieved successfully", &doc);
+  } catch (const std::exception &e) {
+    global_logger->error("Exception accessing etcd: {}", e.what());
+    SetResponse(cntl, 1, "Exception accessing etcd: " + std::string(e.what()));
+  }
 }
 
 }  // namespace vectordb

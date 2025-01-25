@@ -12,7 +12,7 @@ auto main() -> int {
   server.Init(vectordb::ProxyCfg::Instance().MasterHost(), vectordb::ProxyCfg::Instance().MasterPort(),
               vectordb::ProxyCfg::Instance().InstanceId(), vectordb::ProxyCfg::Instance().ReadPaths(),
               vectordb::ProxyCfg::Instance().WritePaths());
-  vectordb::global_logger->info("HttpServer created");
+  vectordb::global_logger->info("ProxyServer created");
 
   std::string server_addr =
       vectordb::ProxyCfg::Instance().Address() + ":" + std::to_string(vectordb::ProxyCfg::Instance().Port());

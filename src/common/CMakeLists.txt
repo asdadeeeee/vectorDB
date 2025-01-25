@@ -3,6 +3,7 @@ add_library(
         OBJECT
         vector_cfg.cpp
         proxy_cfg.cpp
+        master_cfg.cpp
         vector_init.cpp
         )
 
