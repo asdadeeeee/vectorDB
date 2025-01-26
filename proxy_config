@@ -1,13 +1,13 @@
 {
     "INSTANCE_ID" : 1,
     "PROXY_ADDRESS" : "0.0.0.0",
-    "PROXY_PORT" : 80,
+    "PROXY_PORT" : 6061,
 
     "MASTER_HOST" : "127.0.0.1",
     "MASTER_PORT" : 6060,
 
-    "READ_PATHS" :[ "/search"],
-    "WRITE_PATHS" :[ "/upsert"],
+    "READ_PATHS" :[ "/UserService/search"],
+    "WRITE_PATHS" :[ "/UserService/upsert"],
     
     "LOG":{
         "LOG_NAME" : "my_log",

@@ -1,6 +1,7 @@
 #pragma once
 #include <curl/curl.h>
 #include <rapidjson/document.h>
+#include <cstdint>
 #include <string>
 #include <utility>
 #include "brpc/stream.h"
@@ -14,7 +15,7 @@
 namespace vectordb {
 // 节点信息结构
 struct NodeInfo {
-  std::string node_id_;
+  uint64_t node_id_;
   std::string url_;
   int role_;  // 例如，0 表示主节点，1 表示从节点
 };

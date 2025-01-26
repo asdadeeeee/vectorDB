@@ -5,7 +5,7 @@ void ProxyServiceImpl::search(::google::protobuf::RpcController *controller, con
   global_logger->info("Forwarding POST /search");
   brpc::ClosureGuard done_guard(done);
   auto *cntl = static_cast<brpc::Controller *>(controller);
-  ForwardRequest(cntl, done, "/search");
+  ForwardRequest(cntl, done, "/UserService/search");
 }
 
 void ProxyServiceImpl::upsert(::google::protobuf::RpcController *controller, const ::nvm::HttpRequest * /*request*/,
@@ -13,7 +13,7 @@ void ProxyServiceImpl::upsert(::google::protobuf::RpcController *controller, con
   global_logger->info("Forwarding POST /upsert");
   brpc::ClosureGuard done_guard(done);
   auto *cntl = static_cast<brpc::Controller *>(controller);
-  ForwardRequest(cntl, done, "/upsert");
+  ForwardRequest(cntl, done, "/UserService/upsert");
 }
 
 void ProxyServiceImpl::topology(::google::protobuf::RpcController *controller, const ::nvm::HttpRequest * /*request*/,
@@ -38,7 +38,7 @@ void ProxyServiceImpl::topology(::google::protobuf::RpcController *controller, c
   int active_index = active_nodes_index_.load();
   for (const auto &node : nodes_[active_index]) {
     rapidjson::Value node_obj(rapidjson::kObjectType);
-    node_obj.AddMember("nodeId", rapidjson::Value(node.node_id_.c_str(), allocator), allocator);
+    node_obj.AddMember("nodeId", node.node_id_, allocator);
     node_obj.AddMember("url", rapidjson::Value(node.url_.c_str(), allocator), allocator);
     node_obj.AddMember("role", node.role_, allocator);
     nodes_array.PushBack(node_obj, allocator);
@@ -67,7 +67,7 @@ void ProxyServiceImpl::ForwardRequest(brpc::Controller *cntl, ::google::protobuf
   json_request.Parse(cntl->request_attachment().to_string().c_str());
 
   // 打印用户的输入参数
-  global_logger->info("Search request parameters: {}", cntl->request_attachment().to_string());
+  global_logger->info("path: {} request parameters: {}", path, cntl->request_attachment().to_string());
 
   // 检查JSON文档是否为有效对象
   if (!json_request.IsObject()) {
@@ -99,11 +99,24 @@ void ProxyServiceImpl::ForwardRequest(brpc::Controller *cntl, ::google::protobuf
 
   // 设置 CURL 选项
   curl_easy_setopt(curl_handle_, CURLOPT_URL, target_url.c_str());
-  if (cntl->http_request().method() == brpc::HTTP_METHOD_POST) {
-    curl_easy_setopt(curl_handle_, CURLOPT_POSTFIELDS, cntl->request_attachment().to_string().c_str());
-  } else {
-    curl_easy_setopt(curl_handle_, CURLOPT_HTTPGET, 1L);
-  }
+
+  // 设置为 POST 请求
+  curl_easy_setopt(curl_handle_, CURLOPT_POST, 1L);
+
+  // 设置请求头
+  struct curl_slist *headers = nullptr;
+  headers = curl_slist_append(headers, "Content-Type: application/json");
+  curl_easy_setopt(curl_handle_, CURLOPT_HTTPHEADER, headers);
+
+  // 设置 POST 数据
+
+  // std::string json_data = "{\"instanceId\": " + std::to_string(instance_id_) + "}";
+
+
+  std::string request_data = cntl->request_attachment().to_string();
+  global_logger->info("request_data: {}", request_data);
+  curl_easy_setopt(curl_handle_, CURLOPT_POSTFIELDS, request_data.c_str());
+
   curl_easy_setopt(curl_handle_, CURLOPT_WRITEFUNCTION, WriteCallback);
 
   // 响应数据容器
@@ -135,7 +148,8 @@ void ProxyServiceImpl::FetchAndUpdateNodes() {
   global_logger->info("Fetching nodes from Master Server");
 
   // 构建请求 URL
-  std::string url = "http://" + master_server_host_ + ":" + std::to_string(master_server_port_) + "/GetInstance";
+  std::string url =
+      "http://" + master_server_host_ + ":" + std::to_string(master_server_port_) + "/MasterService/GetInstance";
 
   // 创建 JSON 数据
   std::string json_data = "{\"instanceId\": " + std::to_string(instance_id_) + "}";
@@ -183,7 +197,7 @@ void ProxyServiceImpl::FetchAndUpdateNodes() {
   const auto &nodes_array = doc["data"]["nodes"].GetArray();
   for (const auto &node_val : nodes_array) {
     NodeInfo node;
-    node.node_id_ = node_val["nodeId"].GetString();
+    node.node_id_ = node_val["nodeId"].GetUint64();
     node.url_ = node_val["url"].GetString();
     node.role_ = node_val["role"].GetInt();
     nodes_[inactive_index].push_back(node);
