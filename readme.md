@@ -65,8 +65,8 @@ See the example and explaination in common/vector_cfg.cpp
 According to your vectordb_config,you should make sure these path exist;
 like this:
 ```shell
-mkdir ~/vectordb/
-cd ~/vectordb
+mkdir ~/vectordb1/
+cd ~/vectordb1
 mkdir snap
 mkdir storage
 
@@ -75,10 +75,10 @@ cd ~/test_vectordb
 mkdir snap
 mkdir storage
 ```
-When you use vdb_server you will use ~/vectordb,when vdb_server is restarted, the contents will be retained
+When you use vdb_server you will use ~/vectordb1,when vdb_server is restarted, the contents will be retained
 If you want to reset, you can remove these and create again like this:
 ``` shell
-cd ~/vectordb
+cd ~/vectordb1
 rm -rf wal snap* storage*
 mkdir snap
 mkdir storage
@@ -133,7 +133,8 @@ cd build
 ./bin/vdb_server 2
 ```
 1，2为nodeID
-只要在vectordb_config中配置好node信息,即可在终端中执行```./vdb_server $nodeid```
+只要在vectordb_config中配置好node信息,即可在终端中执行```./vdb_server $nodeid```(不输入nodeid则默认为1)
+
 
 选取其中一个作为主节点，将其他节点作为从节点加入集群:
 ```shell

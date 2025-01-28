@@ -6,6 +6,7 @@ third_party/src
 third_party/proto/*.h
 third_party/proto/*.cc
 third_party/NuRaft*
+third_party/etcd*
 #==============================================================================#
 # File extensions to be ignored anywhere in the tree.
 #==============================================================================#
