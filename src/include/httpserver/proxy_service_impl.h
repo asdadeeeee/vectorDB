@@ -45,7 +45,6 @@ class ProxyServiceImpl : public nvm::ProxyService, public BaseServiceImpl {
 
  private:
   void ForwardRequest(brpc::Controller *cntl, ::google::protobuf::Closure *done, const std::string &path);
-  static auto WriteCallback(void *contents, size_t size, size_t nmemb, void *userp) -> size_t;
 
  private:
   int instance_id_;                      // 当前 Proxy Server 所属的实例 ID

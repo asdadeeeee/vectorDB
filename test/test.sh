@@ -13,7 +13,7 @@ curl -X POST -H "Content-Type: application/json" -d '{}' http://localhost:7781/A
 curl -X GET http://localhost:7781/AdminService/ListNode
 curl -X GET http://localhost:7781/AdminService/GetNode
 curl -X POST -H "Content-Type: application/json" -d '{"nodeId": 2, "endpoint": "127.0.0.1:8082"}' http://localhost:7781/AdminService/AddFollower
-
+curl -X POST -H "Content-Type: application/json" -d '{"nodeId": 3, "endpoint": "127.0.0.1:8083"}' http://localhost:7781/AdminService/AddFollower
 
 查看node信息
 curl -X POST -H "Content-Type: application/json" -d '{"instanceId" : 1,"nodeId": 1}'  http://localhost:6060/MasterService/GetNodeInfo
@@ -25,6 +25,10 @@ curl -X POST -H "Content-Type: application/json" -d '{"instanceId" : 1}'  http:/
 curl -X POST -H "Content-Type: application/json" -d '{"instanceId": 1, "nodeId": 2, "url": "http://127.0.0.1:7782", "role": 1, "status": 0}' http://localhost:6060/MasterService/AddNode
 删除node2信息
 curl -X DELETE -H "Content-Type: application/json" -d '{"instanceId" : 1,"nodeId": 2}'  http://localhost:6060/MasterService/RemoveNode
+增加node3信息
+curl -X POST -H "Content-Type: application/json" -d '{"instanceId": 1, "nodeId": 3, "url": "http://127.0.0.1:7783", "role": 1, "status": 0}' http://localhost:6060/MasterService/AddNode
+删除node2信息
+curl -X DELETE -H "Content-Type: application/json" -d '{"instanceId" : 1,"nodeId": 3}'  http://localhost:6060/MasterService/RemoveNode
 
 
 查看top结构

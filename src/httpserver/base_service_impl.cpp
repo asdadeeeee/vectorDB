@@ -43,23 +43,22 @@ auto BaseServiceImpl::IsRequestValid(const rapidjson::Document &json_request, Ch
   }
 }
 
+void BaseServiceImpl::SetResponse(brpc::Controller *cntl, int retCode, const std::string &msg,
+                                  const rapidjson::Document *data) {
+  rapidjson::Document doc;
+  doc.SetObject();
+  rapidjson::Document::AllocatorType &allocator = doc.GetAllocator();
 
-void BaseServiceImpl::SetResponse(brpc::Controller *cntl,int retCode, const std::string& msg, const rapidjson::Document* data) {
-    rapidjson::Document doc;
-    doc.SetObject();
-    rapidjson::Document::AllocatorType& allocator = doc.GetAllocator();
+  doc.AddMember("retCode", retCode, allocator);
+  doc.AddMember("msg", rapidjson::Value(msg.c_str(), allocator), allocator);
 
-    doc.AddMember("retCode", retCode, allocator);
-    doc.AddMember("msg", rapidjson::Value(msg.c_str(), allocator), allocator);
-
-    if (data != nullptr && data->IsObject()) {
-        rapidjson::Value data_value(rapidjson::kObjectType);
-        data_value.CopyFrom(*data, allocator); // 正确地复制 data
-        doc.AddMember("data", data_value, allocator);
-    }
-    SetJsonResponse(doc,cntl);
+  if (data != nullptr && data->IsObject()) {
+    rapidjson::Value data_value(rapidjson::kObjectType);
+    data_value.CopyFrom(*data, allocator);  // 正确地复制 data
+    doc.AddMember("data", data_value, allocator);
+  }
+  SetJsonResponse(doc, cntl);
 }
-
 
 auto BaseServiceImpl::GetIndexTypeFromRequest(const rapidjson::Document &json_request)
     -> vectordb::IndexFactory::IndexType {
@@ -74,5 +73,10 @@ auto BaseServiceImpl::GetIndexTypeFromRequest(const rapidjson::Document &json_re
     }
   }
   return vectordb::IndexFactory::IndexType::UNKNOWN;
+}
+
+auto BaseServiceImpl::WriteCallback(void *contents, size_t size, size_t nmemb, void *userp) -> size_t {
+  (static_cast<std::string *>(userp))->append(static_cast<char *>(contents), size * nmemb);
+  return size * nmemb;
 }
 }  // namespace vectordb

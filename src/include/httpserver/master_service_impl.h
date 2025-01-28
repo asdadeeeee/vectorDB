@@ -1,6 +1,7 @@
 #pragma once
 #include <curl/curl.h>
 #include <rapidjson/document.h>
+#include <etcd/Client.hpp>
 #include <string>
 #include <utility>
 #include "brpc/stream.h"
@@ -11,7 +12,6 @@
 #include "httpserver/base_service_impl.h"
 #include "index/faiss_index.h"
 #include "index/index_factory.h"
-#include <etcd/Client.hpp>
 namespace vectordb {
 
 enum class ServerRole { Master, Backup };
@@ -39,12 +39,14 @@ class MasterServiceImpl : public nvm::MasterService, public BaseServiceImpl {
 
   void GetInstance(::google::protobuf::RpcController *controller, const ::nvm::HttpRequest * /*request*/,
                    ::nvm::HttpResponse * /*response*/, ::google::protobuf::Closure *done) override;
+                   
+  void UpdateNodeStates();
 
  private:
-//   void ForwardRequest(brpc::Controller *cntl, ::google::protobuf::Closure *done, const std::string &path);
-//   static auto WriteCallback(void *contents, size_t size, size_t nmemb, void *userp) -> size_t;
+  
 
  private:
   etcd::Client etcd_client_;
+  std::map<std::string, int> node_error_counts_; // 错误计数器
 };
 }  // namespace vectordb

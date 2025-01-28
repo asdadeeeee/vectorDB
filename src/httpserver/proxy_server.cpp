@@ -27,6 +27,7 @@ auto ProxyServer::Init(const std::string &masterServerHost, int masterServerPort
     global_logger->error("Failed to add http_service_impl");
     return false;
   }
+  running_ = true;
   StartNodeUpdateTimer();  // 启动节点更新定时器
   FetchAndUpdateNodes();
   global_logger->info("ProxyServer init success");

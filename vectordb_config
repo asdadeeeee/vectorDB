@@ -24,6 +24,19 @@
             "ADDRESS" : "0.0.0.0",
             "PORT" : 7782
 
+        },
+        {
+            "RAFT":{
+                "NODE_ID":3,
+                "ENDPOINT":"127.0.0.1:8083",
+                "PORT":8083
+            },
+            "ROCKS_DB_PATH" : "/home/zhouzj/vectordb3/storage",
+            "WAL_PATH" : "/home/zhouzj/vectordb3/wal",
+            "SNAP_PATH" : "/home/zhouzj/vectordb3/snap/",
+            "ADDRESS" : "0.0.0.0",
+            "PORT" : 7783
+
         }
     ],
     "LOG":{

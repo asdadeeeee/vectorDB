@@ -1,4 +1,5 @@
 #include "httpserver/proxy_service_impl.h"
+#include "httpserver/base_service_impl.h"
 namespace vectordb {
 void ProxyServiceImpl::search(::google::protobuf::RpcController *controller, const ::nvm::HttpRequest * /*request*/,
                               ::nvm::HttpResponse * /*response*/, ::google::protobuf::Closure *done) {
@@ -112,7 +113,6 @@ void ProxyServiceImpl::ForwardRequest(brpc::Controller *cntl, ::google::protobuf
 
   // std::string json_data = "{\"instanceId\": " + std::to_string(instance_id_) + "}";
 
-
   std::string request_data = cntl->request_attachment().to_string();
   global_logger->info("request_data: {}", request_data);
   curl_easy_setopt(curl_handle_, CURLOPT_POSTFIELDS, request_data.c_str());
@@ -169,7 +169,7 @@ void ProxyServiceImpl::FetchAndUpdateNodes() {
   curl_easy_setopt(curl_handle_, CURLOPT_POSTFIELDS, json_data.c_str());
 
   std::string response_data;
-  curl_easy_setopt(curl_handle_, CURLOPT_WRITEFUNCTION, ProxyServiceImpl::WriteCallback);
+  curl_easy_setopt(curl_handle_, CURLOPT_WRITEFUNCTION, BaseServiceImpl::WriteCallback);
   curl_easy_setopt(curl_handle_, CURLOPT_WRITEDATA, &response_data);
 
   // 执行 CURL 请求
@@ -196,21 +196,20 @@ void ProxyServiceImpl::FetchAndUpdateNodes() {
   nodes_[inactive_index].clear();
   const auto &nodes_array = doc["data"]["nodes"].GetArray();
   for (const auto &node_val : nodes_array) {
-    NodeInfo node;
-    node.node_id_ = node_val["nodeId"].GetUint64();
-    node.url_ = node_val["url"].GetString();
-    node.role_ = node_val["role"].GetInt();
-    nodes_[inactive_index].push_back(node);
+    if (node_val["status"].GetInt() == 1) {  // 只添加状态为 1 的节点
+      NodeInfo node;
+      node.node_id_ = node_val["nodeId"].GetUint64();
+      node.url_ = node_val["url"].GetString();
+      node.role_ = node_val["role"].GetInt();
+      nodes_[inactive_index].push_back(node);
+    } else {
+      global_logger->info("Skipping inactive node: {}", node_val["nodeId"].GetUint64());
+    }
   }
 
   // 原子地切换活动数组索引
   active_nodes_index_.store(inactive_index);
   global_logger->info("Nodes updated successfully");
-}
-
-auto ProxyServiceImpl::WriteCallback(void *contents, size_t size, size_t nmemb, void *userp) -> size_t {
-  (static_cast<std::string *>(userp))->append(static_cast<char *>(contents), size * nmemb);
-  return size * nmemb;
 }
 
 }  // namespace vectordb

@@ -25,6 +25,8 @@ class BaseServiceImpl {
   auto IsRequestValid(const rapidjson::Document &json_request, CheckType check_type) -> bool;
 
   auto GetIndexTypeFromRequest(const rapidjson::Document &json_request) -> vectordb::IndexFactory::IndexType;
+
+  static auto WriteCallback(void *contents, size_t size, size_t nmemb, void *userp) -> size_t ;
 };
 
 }  // namespace vectordb

@@ -230,4 +230,85 @@ void MasterServiceImpl::GetInstance(::google::protobuf::RpcController *controlle
   }
 }
 
+
+void MasterServiceImpl::UpdateNodeStates() {
+    CURL* curl = curl_easy_init();
+
+    if (curl == nullptr) {
+        global_logger->error("CURL initialization failed");
+        return;
+    }
+
+    try {
+        std::string nodes_key_prefix = "/instances/";
+        global_logger->info("Fetching nodes list from etcd");
+        etcd::Response etcd_response = etcd_client_.ls(nodes_key_prefix).get();
+
+        for (size_t i = 0; i < etcd_response.keys().size(); ++i) {
+            const std::string& node_key = etcd_response.keys()[i];
+            const std::string& node_value = etcd_response.values()[i].as_string();
+
+            rapidjson::Document node_doc;
+            node_doc.Parse(node_value.c_str());
+            if (!node_doc.IsObject()) {
+                global_logger->warn("Invalid JSON format for node: {}", node_key);
+                continue;
+            }
+
+            std::string get_node_url = std::string(node_doc["url"].GetString()) + "/AdminService/GetNode";
+            global_logger->debug("Sending request to {}", get_node_url);
+
+            curl_easy_setopt(curl, CURLOPT_URL, get_node_url.c_str());
+            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION,  BaseServiceImpl::WriteCallback);
+
+            std::string response_str;
+            curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response_str);
+
+            CURLcode res = curl_easy_perform(curl);
+            bool needs_update = false;
+
+            if (res != CURLE_OK) {
+                global_logger->error("curl_easy_perform() failed: {}", curl_easy_strerror(res));
+                node_error_counts_[node_key]++;
+                if (node_error_counts_[node_key] >= 5 && node_doc["status"].GetInt() != 0) {
+                    node_doc["status"].SetInt(0); // Set status to 0 (abnormal)
+                    needs_update = true;
+                }
+            } else {
+                node_error_counts_[node_key] = 0; // Reset error count
+                if (node_doc["status"].GetInt() != 1) {
+                    node_doc["status"].SetInt(1); // Set status to 1 (normal)
+                    needs_update = true;
+                }
+
+                rapidjson::Document get_node_response;
+                get_node_response.Parse(response_str.c_str());
+                if (get_node_response.HasMember("node") && get_node_response["node"].IsObject()) {
+                    std::string state = get_node_response["node"]["state"].GetString();
+                    int new_role = (state == "leader") ? 0 : 1;
+
+                    if (node_doc["role"].GetInt() != new_role) {
+                        node_doc["role"].SetInt(new_role); // Update role
+                        needs_update = true;
+                    }
+                }
+            }
+
+            if (needs_update) {
+                rapidjson::StringBuffer buffer;
+                rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+                node_doc.Accept(writer);
+
+                etcd_client_.set(node_key, buffer.GetString()).get();
+                global_logger->info("Updated node {} with new status and role", node_key);
+            }
+        }
+    } catch (const std::exception& e) {
+        global_logger->error("Exception while updating node states: {}", e.what());
+    }
+
+    curl_easy_cleanup(curl);
+}
+
+
 }  // namespace vectordb
