@@ -26,6 +26,8 @@ rpc GetNodeInfo(HttpRequest) returns (HttpResponse);
 rpc AddNode(HttpRequest) returns (HttpResponse);
 rpc RemoveNode(HttpRequest) returns (HttpResponse);
 rpc GetInstance(HttpRequest) returns (HttpResponse);
+rpc GetPartitionConfig(HttpRequest) returns (HttpResponse);
+rpc UpdatePartitionConfig(HttpRequest) returns (HttpResponse);
 };
 
 

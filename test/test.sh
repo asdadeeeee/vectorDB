@@ -15,30 +15,65 @@ curl -X GET http://localhost:7781/AdminService/GetNode
 curl -X POST -H "Content-Type: application/json" -d '{"nodeId": 2, "endpoint": "127.0.0.1:8082"}' http://localhost:7781/AdminService/AddFollower
 curl -X POST -H "Content-Type: application/json" -d '{"nodeId": 3, "endpoint": "127.0.0.1:8083"}' http://localhost:7781/AdminService/AddFollower
 
-查看node信息
+#查看node信息
 curl -X POST -H "Content-Type: application/json" -d '{"instanceId" : 1,"nodeId": 1}'  http://localhost:6060/MasterService/GetNodeInfo
-增加node1信息
+#增加node1信息
 curl -X POST -H "Content-Type: application/json" -d '{"instanceId": 1, "nodeId": 1, "url": "http://127.0.0.1:7781", "role": 0, "status": 0}' http://localhost:6060/MasterService/AddNode
-查看instance下的所有node信息
+#查看instance下的所有node信息
 curl -X POST -H "Content-Type: application/json" -d '{"instanceId" : 1}'  http://localhost:6060/MasterService/GetInstance
-增加node2信息
+#增加node2信息
 curl -X POST -H "Content-Type: application/json" -d '{"instanceId": 1, "nodeId": 2, "url": "http://127.0.0.1:7782", "role": 1, "status": 0}' http://localhost:6060/MasterService/AddNode
-删除node2信息
+#删除node2信息
 curl -X DELETE -H "Content-Type: application/json" -d '{"instanceId" : 1,"nodeId": 2}'  http://localhost:6060/MasterService/RemoveNode
-增加node3信息
+#增加node3信息
 curl -X POST -H "Content-Type: application/json" -d '{"instanceId": 1, "nodeId": 3, "url": "http://127.0.0.1:7783", "role": 1, "status": 0}' http://localhost:6060/MasterService/AddNode
-删除node2信息
+#删除node3信息
 curl -X DELETE -H "Content-Type: application/json" -d '{"instanceId" : 1,"nodeId": 3}'  http://localhost:6060/MasterService/RemoveNode
+#增加node4信息
+curl -X POST -H "Content-Type: application/json" -d '{"instanceId": 1, "nodeId": 4, "url": "http://127.0.0.1:7784", "role": 0, "status": 0}' http://localhost:6060/MasterService/AddNode
+#删除node3信息
+curl -X DELETE -H "Content-Type: application/json" -d '{"instanceId" : 1,"nodeId": 4}'  http://localhost:6060/MasterService/RemoveNode
 
-
-查看top结构
+#查看top结构
 curl -X GET http://localhost:6061/ProxyService/topology
 
-读请求
+#读请求
 curl -X POST -H "Content-Type: application/json" -d '{"vectors": [0.9], "k": 5, "indexType": "FLAT", "filter":{"fieldName":"int_field","value":49, "op":"="}}' http://localhost:6061/ProxyService/search
 
-写请求
+#写请求
 curl -X POST -H "Content-Type: application/json" -d '{"id": 6, "vectors": [0.9], "int_field": 49, "indexType": "FLAT"}' http://localhost:6061/ProxyService/upsert
 
-强制读主
-curl -X POST -H "Content-Type: application/json" -d '{"vectors": [0.9], "k": 5, "indexType": "FLAT", "filter":{"fieldName":"int_field","value":49 ,"op":"="},"forceMaster" : true}' http://localhost:6061/ProxyService/search
+#强制读主
+curl -X POST -H "Content-Type: application/json" -d '{"vectors": [0.89], "k": 5, "indexType": "FLAT", "filter":{"fieldName":"int_field","value":49 ,"op":"="},"forceMaster" : true}' http://localhost:6061/ProxyService/search
+
+
+#更新分区信息：
+curl -X POST http://localhost:6060/MasterService/UpdatePartitionConfig -H "Content-Type: application/json" -d '{ 
+           "instanceId": 1,  
+           "partitionKey": "id", 
+           "numberOfPartitions": 2, 
+           "partitions": [ 
+             {"partitionId": 0, "nodeId": 1}, 
+             {"partitionId": 0, "nodeId": 2},
+             {"partitionId": 0, "nodeId": 3},
+             {"partitionId": 1, "nodeId": 4}
+           ]
+         }'
+
+#获取分区信息：
+
+curl -X POST -H "Content-Type: application/json" -d '{"instanceId" : 1}'  http://localhost:6060/MasterService/GetPartitionConfig
+
+
+
+#更新分区信息：
+curl -X POST http://localhost:6060/MasterService/UpdatePartitionConfig -H "Content-Type: application/json" -d '{
+           "instanceId": 1,
+           "partitionKey": "id",
+           "numberOfPartitions": 1,
+           "partitions": [
+             {"partitionId": 0, "nodeId": 1},
+             {"partitionId": 0, "nodeId": 2},
+             {"partitionId": 0, "nodeId": 3},
+           ]
+         }'

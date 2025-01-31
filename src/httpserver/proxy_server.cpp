@@ -28,8 +28,12 @@ auto ProxyServer::Init(const std::string &masterServerHost, int masterServerPort
     return false;
   }
   running_ = true;
-  StartNodeUpdateTimer();  // 启动节点更新定时器
   FetchAndUpdateNodes();
+  FetchAndUpdatePartitionConfig();
+
+  StartNodeUpdateTimer();  // 启动节点更新定时器
+  StartPartitionUpdateTimer(); // 启动分区配置更新定时器
+  
   global_logger->info("ProxyServer init success");
   return true;
 }
@@ -63,6 +67,15 @@ void ProxyServer::FetchAndUpdateNodes() {
     proxy_service_impl_->FetchAndUpdateNodes();
   }
 }
+
+void ProxyServer::FetchAndUpdatePartitionConfig() {
+  if (proxy_service_impl_ == nullptr) {
+    global_logger->error("proxy_service_impl_ empty");
+  } else {
+    proxy_service_impl_->FetchAndUpdatePartitionConfig();
+  }
+}
+
 void ProxyServer::StartNodeUpdateTimer() {
   std::thread([this]() {
     while (running_) {
@@ -75,4 +88,18 @@ void ProxyServer::StartNodeUpdateTimer() {
     }
   }).detach();
 }
+
+void ProxyServer::StartPartitionUpdateTimer() {
+  std::thread([this]() {
+    while (running_) {
+      std::this_thread::sleep_for(std::chrono::minutes(1));  // 假设每5分钟更新一次，可以根据需要调整
+      if (proxy_service_impl_ == nullptr) {
+        global_logger->error("proxy_service_impl_ empty");
+      } else {
+        proxy_service_impl_->FetchAndUpdatePartitionConfig();
+      }
+    }
+  }).detach();
+}
+
 }  // namespace vectordb

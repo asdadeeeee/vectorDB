@@ -18,6 +18,8 @@ class BaseServiceImpl {
   void SetJsonResponse(const rapidjson::Document &json_response, brpc::Controller *cntl);
   void SetTextResponse(const std::string &response, brpc::Controller *cntl);
   void SetJsonResponse(const std::string &response, brpc::Controller *cntl);
+  void SetJsonResponse(const std::string &response, brpc::Controller *cntl,int status_code);
+  void SetTextResponse(const std::string &response, brpc::Controller *cntl,int status_code);
   void SetErrorJsonResponse(brpc::Controller *cntl, int error_code, const std::string &errorMsg);
   void SetResponse(brpc::Controller *cntl, int retCode, const std::string &msg,
                    const rapidjson::Document *data = nullptr);

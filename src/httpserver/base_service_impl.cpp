@@ -20,6 +20,18 @@ void BaseServiceImpl::SetJsonResponse(const std::string &response, brpc::Control
   cntl->http_response().set_content_type(RESPONSE_CONTENT_TYPE_TEXT);
 }
 
+void BaseServiceImpl::SetJsonResponse(const std::string &response, brpc::Controller *cntl,int status_code) {
+  cntl->response_attachment().append(response);
+  cntl->http_response().set_status_code(status_code);
+  cntl->http_response().set_content_type(RESPONSE_CONTENT_TYPE_TEXT);
+}
+
+void BaseServiceImpl::SetTextResponse(const std::string &response, brpc::Controller *cntl,int status_code) {
+  cntl->response_attachment().append(response);
+  cntl->http_response().set_status_code(status_code);
+  cntl->http_response().set_content_type(RESPONSE_CONTENT_TYPE_TEXT);
+}
+
 void BaseServiceImpl::SetErrorJsonResponse(brpc::Controller *cntl, int error_code, const std::string &errorMsg) {
   rapidjson::Document json_response;
   json_response.SetObject();

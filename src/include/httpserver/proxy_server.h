@@ -20,7 +20,10 @@ class ProxyServer : public brpc::Server {
   void InitCurl();
   void CleanupCurl();
   void FetchAndUpdateNodes();   // 获取并更新节点信息
+  void FetchAndUpdatePartitionConfig();
   void StartNodeUpdateTimer();  // 启动节点更新定时器
+  void StartPartitionUpdateTimer();
+
  private:
   int instance_id_;                    // 当前 Proxy Server 所属的实例 ID
   std::string master_server_host_;     // Master Server 的主机地址

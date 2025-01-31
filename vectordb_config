@@ -37,6 +37,19 @@
             "ADDRESS" : "0.0.0.0",
             "PORT" : 7783
 
+        },
+        {
+            "RAFT":{
+                "NODE_ID":4,
+                "ENDPOINT":"127.0.0.1:8084",
+                "PORT":8084
+            },
+            "ROCKS_DB_PATH" : "/home/zhouzj/vectordb4/storage",
+            "WAL_PATH" : "/home/zhouzj/vectordb4/wal",
+            "SNAP_PATH" : "/home/zhouzj/vectordb4/snap/",
+            "ADDRESS" : "0.0.0.0",
+            "PORT" : 7784
+
         }
     ],
     "LOG":{
