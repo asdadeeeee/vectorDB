@@ -30,9 +30,6 @@ class UserServiceImpl : public nvm::UserService, public BaseServiceImpl {
   void query(::google::protobuf::RpcController *controller, const ::nvm::HttpRequest * /*request*/,
              ::nvm::HttpResponse * /*response*/, ::google::protobuf::Closure *done) override;
 
-  void test(::google::protobuf::RpcController *controller, const ::nvm::HttpRequest * /*request*/,
-            ::nvm::HttpResponse * /*response*/, ::google::protobuf::Closure *done) override;
-
  private:
   VectorDatabase *vector_database_ = nullptr;
   RaftStuff *raft_stuff_ = nullptr;

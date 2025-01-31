@@ -156,6 +156,60 @@ curl -X POST -H "Content-Type: application/json" -d '{"vectors": [0.999], "id":6
 curl -X POST -H "Content-Type: application/json" -d '{"vectors": [0.999], "k": 5 , "indexType": "FLAT","filter":{"fieldName":"int_field","value":47,"op":"="}}'  http://localhost:7782/UserService/search
 ```
 
+目前支持流量转发、故障切换、集群分片
+
+建立vdb_server集群后，利用vdb_server_master管理集群元数据信息，需要手动提前部署好etcd
+```shell
+cd build
+./bin/vdb_server_master
+```
+可通过如下接口管理vdb_server集群信息（role 1为从节点，0为主节点）
+```shell
+#查看node信息
+curl -X POST -H "Content-Type: application/json" -d '{"instanceId" : 1,"nodeId": 1}'  http://localhost:6060/MasterService/GetNodeInfo
+#查看instance下的所有node信息
+curl -X POST -H "Content-Type: application/json" -d '{"instanceId" : 1}'  http://localhost:6060/MasterService/GetInstance
+#增加node2信息
+curl -X POST -H "Content-Type: application/json" -d '{"instanceId": 1, "nodeId": 2, "url": "http://127.0.0.1:7782", "role": 1, "status": 0}' http://localhost:6060/MasterService/AddNode
+#删除node2信息
+curl -X DELETE -H "Content-Type: application/json" -d '{"instanceId" : 1,"nodeId": 2}'  http://localhost:6060/MasterService/RemoveNode
+
+#更新分区信息：
+curl -X POST http://localhost:6060/MasterService/UpdatePartitionConfig -H "Content-Type: application/json" -d '{ 
+           "instanceId": 1,  
+           "partitionKey": "id", 
+           "numberOfPartitions": 2, 
+           "partitions": [ 
+             {"partitionId": 0, "nodeId": 1}, 
+             {"partitionId": 0, "nodeId": 2},
+             {"partitionId": 0, "nodeId": 3},
+             {"partitionId": 1, "nodeId": 4}
+           ]
+         }'
+
+#获取分区信息：
+
+curl -X POST -H "Content-Type: application/json" -d '{"instanceId" : 1}'  http://localhost:6060/MasterService/GetPartitionConfig
+```
+
+利用vdb_server_proxy提供统一的流量入口（读写分离，写必然在主节点）
+```shell
+cd build
+./bin/vdb_server_master
+```
+
+如果master中设置了partition，则请求也会根据分片进行转发（一个分片需要有一个主节点）
+```shell
+#读请求
+curl -X POST -H "Content-Type: application/json" -d '{"vectors": [0.9], "k": 5, "indexType": "FLAT", "filter":{"fieldName":"int_field","value":49, "op":"="}}' http://localhost:6061/ProxyService/search
+
+#写请求
+curl -X POST -H "Content-Type: application/json" -d '{"id": 6, "vectors": [0.9], "int_field": 49, "indexType": "FLAT"}' http://localhost:6061/ProxyService/upsert
+
+#强制读主
+curl -X POST -H "Content-Type: application/json" -d '{"vectors": [0.89], "k": 5, "indexType": "FLAT", "filter":{"fieldName":"int_field","value":49 ,"op":"="},"forceMaster" : true}' http://localhost:6061/ProxyService/search
+```
+
 ## Reference
 
 ### Book
@@ -185,6 +239,9 @@ curl -X POST -H "Content-Type: application/json" -d '{"vectors": [0.999], "k": 5
 * roaring
 * gtest
 * backward-cpp
+* nuraft
+* curl
+* etcdclient
 
 ### Repository
 非常感谢 Xiaoccer , third_party下的patches,build.sh,CMakeLists.txt基于 [TineVecDB](https://github.com/Xiaoccer/TinyVecDB.git) 中third_party下的内容进行修改
@@ -196,7 +253,7 @@ vectorDB is licensed under the MIT License. For more details, please refer to th
 
 
 ## Optimization
-目前已完成《从零构建向量数据库》前四章所有内容，并在此之上做如下优化：
+目前已完成《从零构建向量数据库》前五章所有内容，并在此之上做如下优化：
 
 ### 代码架构
 将代码结构化，添加CMakeList一键编译；
@@ -223,6 +280,9 @@ vectorDB is licensed under the MIT License. For more details, please refer to th
 
 ### 压缩WAL日志文件
 采用snappy压缩算法，对WAL进行压缩及解压缩，减少WAL文件所占空间
+
+### 优化通讯协议
+利用protobuf + brpc替代httplib
 
 
 

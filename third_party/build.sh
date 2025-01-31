@@ -367,6 +367,13 @@ function build_brpc() {
 
     [ -f ${TP_SOURCE_DIR}/${FILE} ] || wget $URL -O ${TP_SOURCE_DIR}/${FILE}
     check_md5 ${TP_SOURCE_DIR}/${FILE} $MD5SUM
+
+    # 如果目录已存在，先删除
+    if [[ -d "${TP_SOURCE_DIR}/${DIR}" ]]; then
+        echo "删除已存在的目录: ${TP_SOURCE_DIR}/${DIR}"
+        rm -rf "${TP_SOURCE_DIR}/${DIR}"
+    fi
+
     [ -d ${TP_SOURCE_DIR}/${DIR} ] || tar xvf ${TP_SOURCE_DIR}/${FILE} -C ${TP_SOURCE_DIR}
 
     cd ${TP_SOURCE_DIR}/${DIR}
@@ -483,7 +490,7 @@ function build_nuraft() {
     cd ${TP_SOURCE_DIR}/${DIR}
     rm -rf asio
     git clone https://gh.llkk.cc/https://github.com/chriskohlhoff/asio -b asio-1-24-0
-    cmake -B build .  -DCMAKE_INSTALL_PREFIX="${TP_INSTALL_DIR}" \
+    cmake -B build .  -DCMAKE_INSTALL_PREFIX="${TP_INSTALL_DIR}" 
     make -C build -j ${PARALLEL} install
     cp src/event_awaiter.h ${TP_INCLUDE_DIR}/libnuraft
     cp examples/backtrace.h ${TP_INCLUDE_DIR}/libnuraft

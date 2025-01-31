@@ -267,20 +267,4 @@ void UserServiceImpl::query(::google::protobuf::RpcController *controller, const
   SetJsonResponse(json_response, cntl);
 }
 
-
-void UserServiceImpl::test(::google::protobuf::RpcController *controller, const ::nvm::HttpRequest * /*request*/,
-                            ::nvm::HttpResponse * /*response*/, ::google::protobuf::Closure *done) {
-  global_logger->debug("Received test request");
-
-  brpc::ClosureGuard done_guard(done);
-  auto *cntl = static_cast<brpc::Controller *>(controller);
-  // 将结果转换为JSON
-  rapidjson::Document json_response;
-  json_response.SetObject();
-  rapidjson::Document::AllocatorType &allocator = json_response.GetAllocator();
-  // 设置响应
-  json_response.AddMember(RESPONSE_RETCODE, RESPONSE_RETCODE_SUCCESS, allocator);
-  SetJsonResponse(json_response, cntl);
-}
-
 }  // namespace vectordb
